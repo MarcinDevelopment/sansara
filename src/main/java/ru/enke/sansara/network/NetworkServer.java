@@ -6,11 +6,15 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import ru.enke.minecraft.protocol.codec.LengthCodec;
 import ru.enke.minecraft.protocol.codec.PacketCodec;
+import ru.enke.minecraft.protocol.packet.client.game.ClientChat;
+import ru.enke.minecraft.protocol.packet.client.game.block.BlockDigging;
 import ru.enke.minecraft.protocol.packet.client.login.LoginStart;
 import ru.enke.minecraft.protocol.packet.client.status.PingRequest;
 import ru.enke.minecraft.protocol.packet.client.status.StatusRequest;
 import ru.enke.sansara.Server;
 import ru.enke.sansara.network.handler.MessageHandlerRegistry;
+import ru.enke.sansara.network.handler.ingame.PlayerBlockDiggingHandler;
+import ru.enke.sansara.network.handler.ingame.PlayerChatHandler;
 import ru.enke.sansara.network.handler.login.LoginStartHandler;
 import ru.enke.sansara.network.handler.status.PingRequestHandler;
 import ru.enke.sansara.network.handler.status.StatusRequestHandler;
@@ -33,6 +37,8 @@ public class NetworkServer {
         messageHandlerRegistry.registerHandler(StatusRequest.class, new StatusRequestHandler(server));
         messageHandlerRegistry.registerHandler(PingRequest.class, new PingRequestHandler());
         messageHandlerRegistry.registerHandler(LoginStart.class, new LoginStartHandler(server));
+        messageHandlerRegistry.registerHandler(ClientChat.class, new PlayerChatHandler(server));
+        messageHandlerRegistry.registerHandler(BlockDigging.class, new PlayerBlockDiggingHandler(server));
     }
 
     public boolean bind(final int port) {

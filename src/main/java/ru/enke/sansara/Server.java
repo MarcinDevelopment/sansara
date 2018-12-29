@@ -3,6 +3,7 @@ package ru.enke.sansara;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import ru.enke.minecraft.protocol.packet.PacketMessage;
 import ru.enke.sansara.network.NetworkServer;
 import ru.enke.sansara.network.session.Session;
 import ru.enke.sansara.network.session.SessionRegistry;
@@ -97,4 +98,10 @@ public class Server extends PlayerRegistry implements Runnable {
         return Collections.unmodifiableCollection(worlds.values());
     }
 
+
+    public void sendGlobalPacket(PacketMessage packet) {
+        for (Player p : getPlayers()) {
+            p.sendPacket(packet);
+        }
+    }
 }

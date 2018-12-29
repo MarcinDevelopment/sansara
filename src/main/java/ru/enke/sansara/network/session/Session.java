@@ -8,11 +8,12 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import ru.enke.minecraft.protocol.codec.CompressionCodec;
 import ru.enke.minecraft.protocol.packet.PacketMessage;
-import ru.enke.minecraft.protocol.packet.data.game.Difficulty;
-import ru.enke.minecraft.protocol.packet.data.game.GameMode;
-import ru.enke.minecraft.protocol.packet.data.game.WorldType;
+import ru.enke.minecraft.protocol.packet.data.game.*;
 import ru.enke.minecraft.protocol.packet.server.game.JoinGame;
 import ru.enke.minecraft.protocol.packet.server.game.SpawnPosition;
+import ru.enke.minecraft.protocol.packet.server.game.block.BlockChange;
+import ru.enke.minecraft.protocol.packet.server.game.chunk.ChunkData;
+import ru.enke.minecraft.protocol.packet.server.game.player.ServerPlayerAbilities;
 import ru.enke.minecraft.protocol.packet.server.game.player.ServerPlayerPositionLook;
 import ru.enke.minecraft.protocol.packet.server.login.LoginSetCompression;
 import ru.enke.minecraft.protocol.packet.server.login.LoginSuccess;
@@ -106,10 +107,22 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
         server.addPlayer(player);
         world.addPlayer(player);
 
-        sendPacket(new JoinGame(player.getId(), GameMode.SURVIVAL, 0, Difficulty.NORMAL, 100, WorldType.DEFAULT, true));
+        sendPacket(new JoinGame(player.getId(), GameMode.CREATIVE, 0, Difficulty.NORMAL, 100, WorldType.DEFAULT, true));
+        sendPacket(new ServerPlayerAbilities(false, false, true, true, .1F, .1F));
+        /* just a test
+           TODO: Chunk system
+        */
+        for (int x = 0; x <= 16; x++) {
+            for (int z = 0; z <= 16; z++) {
+                for (int y = 120; y <= 124; y++) {
+                    sendPacket(new ChunkData(x, z, true, 0, new byte[256]));
+                    sendPacket(new BlockChange(new Position(x , y, z), new BlockState(2, 0)));
+                }
+            }
+        }
+        
         sendPacket(new SpawnPosition(world.getSpawnPosition()));
-
-        sendPacket(new ServerPlayerPositionLook(0, 63, 0, 0, 0, 0, 1));
+        sendPacket(new ServerPlayerPositionLook(8, 128, 8, 0, 0, 0, 1));
     }
 
     private void setCompression(final int threshold) {

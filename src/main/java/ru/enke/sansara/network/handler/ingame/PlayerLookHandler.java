@@ -26,6 +26,6 @@ public class PlayerLookHandler implements MessageHandler<PlayerLook> {
         Player p = session.getPlayer();
         logger.info(msg);
         //there's nothing to do here, I think. It works !
-        server.sendGlobalPacketWop(p, new EntityLook(p.getId(), msg.getYaw(), msg.getPitch(), msg.getGround())); //0x28
+        server.sendPacketToNearbyPlayers(p, new EntityLook(p.getId(), msg.getYaw(), msg.getPitch(), msg.getGround()), true); //0x28
     }
 }

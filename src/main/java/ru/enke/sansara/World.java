@@ -13,7 +13,7 @@ public class World extends PlayerRegistry implements Runnable {
 
     private static final int TIME_UPDATE_INTERVAL = 20;
 
-    private final Position spawnPosition = new Position(8, 128, 8);
+    private final Position spawnPosition = new Position(8, 125, 8);
     private final String name;
     private long age;
     private long time;

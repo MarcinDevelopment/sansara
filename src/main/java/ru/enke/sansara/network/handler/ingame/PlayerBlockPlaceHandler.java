@@ -9,6 +9,7 @@ import ru.enke.minecraft.protocol.packet.server.game.block.BlockChange;
 import ru.enke.sansara.Server;
 import ru.enke.sansara.network.handler.MessageHandler;
 import ru.enke.sansara.network.session.Session;
+import ru.enke.sansara.player.Player;
 
 public class PlayerBlockPlaceHandler implements MessageHandler<BlockPlace> {
 
@@ -23,10 +24,14 @@ public class PlayerBlockPlaceHandler implements MessageHandler<BlockPlace> {
     //TODO: inventory
     @Override
     public void handle(Session session, BlockPlace msg) {
+        if (session.getPlayer() == null) {
+            return;
+        }
+        Player p = session.getPlayer();
         logger.info(msg);
         int x = msg.getPosition().getX();
         int y = msg.getPosition().getY();
         int z = msg.getPosition().getZ();
-        server.sendGlobalPacket(new BlockChange(new Position(x, y, z), new BlockState(1 /* stone */, 0)));
+        server.sendPacketToNearbyPlayers(p, new BlockChange(new Position(x, y, z), new BlockState(1 /* stone */, 0)), false);
     }
 }

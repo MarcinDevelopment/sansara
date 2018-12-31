@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import ru.enke.minecraft.protocol.packet.PacketMessage;
+import ru.enke.minecraft.protocol.packet.data.game.Position;
 import ru.enke.minecraft.protocol.packet.data.message.Message;
 import ru.enke.minecraft.protocol.packet.data.message.MessageType;
 import ru.enke.minecraft.protocol.packet.server.game.ServerChat;
@@ -114,6 +115,23 @@ public class Server extends PlayerRegistry implements Runnable {
                 return;
             }
             p.sendPacket(packet);
+        }
+    }
+
+    private double distanceTo(Position p, Position p2) {
+        return Math.sqrt(Math.pow(p2.getX() - p.getX(), 2) + Math.pow(p2.getY() - p.getY(), 2) + Math.pow(p2.getZ() - p.getZ(), 2));
+    }
+
+    public void sendPacketToNearbyPlayers(Player you, PacketMessage packet, boolean wo) {
+        double dist;
+        for (Player p : getPlayers()) {
+            dist = distanceTo(p.getLocation(), you.getLocation());
+            if (dist <= 32.0D) {
+                if (wo && p.equals(you)) {
+                    return;
+                }
+                p.sendPacket(packet);
+            }
         }
     }
 

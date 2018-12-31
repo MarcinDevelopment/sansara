@@ -10,6 +10,7 @@ import ru.enke.minecraft.protocol.packet.server.game.block.BlockChange;
 import ru.enke.sansara.Server;
 import ru.enke.sansara.network.handler.MessageHandler;
 import ru.enke.sansara.network.session.Session;
+import ru.enke.sansara.player.Player;
 
 public class PlayerBlockDiggingHandler implements MessageHandler<BlockDigging> {
 
@@ -26,7 +27,7 @@ public class PlayerBlockDiggingHandler implements MessageHandler<BlockDigging> {
         if (session.getPlayer() == null) {
             return;
         }
-        //Player p = session.getPlayer();
+        Player p = session.getPlayer();
         logger.info(msg);
         int x = msg.getPosition().getX();
         int y = msg.getPosition().getY();
@@ -39,14 +40,14 @@ public class PlayerBlockDiggingHandler implements MessageHandler<BlockDigging> {
                 break;
             case START_DIGGING:
                 this.eId = server.generateRandomEID();
-                server.sendGlobalPacket(new BlockBreakAnimation(eId, msg.getPosition(), 5 /* TODO use correct values  */));
+                server.sendPacketToNearbyPlayers(p, new BlockBreakAnimation(eId, msg.getPosition(), 5 /* TODO use correct values  */), false);
                 break;
             case CANCEL_DIGGING:
-                server.sendGlobalPacket(new BlockBreakAnimation(eId, msg.getPosition(), -1));
+                server.sendPacketToNearbyPlayers(p, new BlockBreakAnimation(eId, msg.getPosition(), -1), false);
                 break;
             case FINISH_DIGGING:
-                server.sendGlobalPacket(new BlockBreakAnimation(eId, msg.getPosition(), -1));
-                server.sendGlobalPacket(new BlockChange(new Position(x, y, z), new BlockState(0 /* air */, 0)));
+                server.sendPacketToNearbyPlayers(p, new BlockBreakAnimation(eId, msg.getPosition(), -1), false);
+                server.sendPacketToNearbyPlayers(p, new BlockChange(new Position(x, y, z), new BlockState(0 /* air */, 0)), false);
                 //TODO: drop item
                 break;
             case SWAP_HANDS:

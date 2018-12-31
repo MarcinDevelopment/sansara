@@ -26,6 +26,6 @@ public class ClientSwingArmHandler implements MessageHandler<SwingArm> {
         }
         Player p = session.getPlayer();
         logger.info(msg);
-        server.sendGlobalPacketWop(p, new Animation(p.getId(), AnimationType.SWING_ARM));
+        server.sendPacketToNearbyPlayers(p, new Animation(p.getId(), AnimationType.SWING_ARM), true);
     }
 }

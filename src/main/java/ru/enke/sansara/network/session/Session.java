@@ -131,16 +131,17 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
             }
         }
         sendPacket(new SpawnPosition(world.getSpawnPosition()));
-        sendPacket(new ServerPlayerPositionLook(8, 128, 8, 0, 0, 0, 1));
+        sendPacket(new ServerPlayerPositionLook(world.getSpawnPosition().getX(), world.getSpawnPosition().getY(), world.getSpawnPosition().getZ(), 0, 0, 0, 1));
         logger.info("Player {} joined game [entityid={}]", profile.getName(), player.getId());
 
         // Testing
         //server.sendGlobalPacket(new SpawnExpOrb(0, 8, 125, 8, 8));
         //server.sendGlobalPacket(new SpawnGlobalEntity(1, 1, 125, 8, 1)); //lighting strike
         server.sendGlobalPacket(new SpawnMob(99, UUID.randomUUID(),
-                EntityType.ZOMBIE.getId(), 8, 125, 8, 0, 0, 0, 0, 0, 0, Collections.emptyList()));
+                EntityType.ZOMBIE.getId(), world.getSpawnPosition().getX(), world.getSpawnPosition().getY(), world.getSpawnPosition().getZ(),
+                0, 0, 0, 0, 0, 0, Collections.emptyList()));
 
-        world.addEntity(99, EntityType.ZOMBIE, new Position(8, 125, 8));
+        world.addEntity(99, EntityType.ZOMBIE, world.getSpawnPosition());
         //Another test
         player.sendPacket(new PlayerListData(new Message("Hello, " + profile.getName(), MessageColor.GOLD), new Message("0x4A packet test")));
         //TODO: create 0x2E packet

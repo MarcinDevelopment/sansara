@@ -25,18 +25,19 @@ public class ClientStatusHandler implements MessageHandler<ClientStatus> {
     @Override
     public void handle(Session session, ClientStatus msg) {
         logger.debug(msg);
-        if (session.getPlayer() != null) {
-            Player p = session.getPlayer();
-            Position spawnPos = p.getWorld().getSpawnPosition();
-            switch (msg.getStatus()) {
-                case RESPAWN:
-                    p.sendPacket(new Respawn(0, Difficulty.NORMAL, p.getGameMode(), WorldType.DEFAULT));
-                    p.sendPacket(new SpawnPosition(spawnPos));
-                    p.sendPacket(new ServerPlayerPositionLook(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), 0, 0, 0, 1));
-                    break;
-                case STATS:
-                    break;
-            }
+        if (session.getPlayer() == null) {
+            return;
+        }
+        Player p = session.getPlayer();
+        Position spawnPos = p.getWorld().getSpawnPosition();
+        switch (msg.getStatus()) {
+            case RESPAWN:
+                p.sendPacket(new Respawn(0, Difficulty.NORMAL, p.getGameMode(), WorldType.DEFAULT));
+                p.sendPacket(new SpawnPosition(spawnPos));
+                p.sendPacket(new ServerPlayerPositionLook(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), 0, 0, 0, 1));
+                break;
+            case STATS:
+                break;
         }
     }
 }

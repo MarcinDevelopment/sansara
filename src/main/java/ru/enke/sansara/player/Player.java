@@ -20,6 +20,8 @@ public class Player {
     private final Session session;
     private Position location;
     private GameMode gameMode;
+    private int renderDistance;
+    private String locale;
 
     public Player(final int id, final Session session, final World world, final LoginProfile profile) {
         this.id = id;
@@ -66,5 +68,21 @@ public class Player {
 
     public void sendMessage(Message message) {
         sendPacket(new ServerChat(message, MessageType.CHAT));
+    }
+
+    public int getRenderDistance() {
+        return renderDistance;
+    }
+
+    public void setRenderDistance(int renderDistance) {
+        this.renderDistance = renderDistance;
+    }
+
+    public String getLocale() {
+        return locale;
+    }
+
+    public void setLocale(String locale) {
+        this.locale = locale;
     }
 }

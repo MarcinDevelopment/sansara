@@ -111,7 +111,7 @@ public class Server extends PlayerRegistry implements Runnable {
         }
     }
 
-    private void sendGlobalPacketWop(Player except, PacketMessage packet) {
+    public void sendGlobalPacketWop(Player except, PacketMessage packet) {
         for (Player p : getPlayers()) {
             if (p.equals(except)) {
                 return;

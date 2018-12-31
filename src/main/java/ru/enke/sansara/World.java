@@ -18,12 +18,18 @@ public class World extends PlayerRegistry implements Runnable {
     private long age;
     private long time;
     private HashMap<Integer, Entity> worldEntities = new HashMap<>();
+    //private Map<ChunkPosition, Chunk> worldChunks = new HashMap<>();
+
 
     World(final String name, final long time, final long age) {
         this.name = name;
         this.age = age;
         this.time = time;
     }
+
+    /*public Collection<Chunk> getAllChunks() {
+        return this.worldChunks.values();
+    }*/
 
     @Override
     public void run() {

@@ -8,6 +8,7 @@ import ru.enke.minecraft.protocol.packet.server.game.Animation;
 import ru.enke.sansara.Server;
 import ru.enke.sansara.network.handler.MessageHandler;
 import ru.enke.sansara.network.session.Session;
+import ru.enke.sansara.player.Player;
 
 public class PlayerInteractEntityHandler implements MessageHandler<InteractEntity> {
 
@@ -20,12 +21,14 @@ public class PlayerInteractEntityHandler implements MessageHandler<InteractEntit
 
     @Override
     public void handle(Session session, InteractEntity msg) {
+        if (session.getPlayer() == null) {
+            return;
+        }
+        Player p = session.getPlayer();
         switch (msg.getType()) {
             case ATTACK:
                 server.sendGlobalPacket(new Animation(msg.getEntityId(), AnimationType.DAMAGE));
-                if (session.getPlayer() != null) {
-                    logger.debug("entity hurt: " + session.getPlayer().getWorld().getEntityBySpawnId(msg.getEntityId()).toString());
-                }
+                logger.debug("entity hurt: " + p.getWorld().getEntityBySpawnId(msg.getEntityId()).toString());
                 break;
             case INTERACT:
                 //TODO: idk. Too much to do to think about it

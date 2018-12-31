@@ -21,13 +21,14 @@ public class PlayerPositionChangeHandler implements MessageHandler<PlayerPositio
 
     @Override
     public void handle(Session session, PlayerPosition msg) {
-        if (session.getPlayer() != null) {
-            Player p = session.getPlayer();
-            p.setLocation(new Position((int) msg.getX(), (int) msg.getY(), (int) msg.getZ()));
-            if (msg.getY() <= -20) {
-                server.broadcast(new Message(p.getProfile().getName() + " fell out of the world", MessageColor.GRAY)); //TODO: Call it once
-                p.sendPacket(new UpdateHealth(0.0F, 0, 0.0F)); //KILL! (0x41)
-            }
+        if (session.getPlayer() == null) {
+            return;
+        }
+        Player p = session.getPlayer();
+        p.setLocation(new Position((int) msg.getX(), (int) msg.getY(), (int) msg.getZ()));
+        if (msg.getY() <= -20) {
+            server.broadcast(new Message(p.getProfile().getName() + " fell out of the world", MessageColor.GRAY)); //TODO: Call it once
+            p.sendPacket(new UpdateHealth(0.0F, 0, 0.0F)); //KILL! (0x41)
         }
     }
 }

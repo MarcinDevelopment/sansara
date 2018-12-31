@@ -7,6 +7,7 @@ import ru.enke.minecraft.protocol.packet.server.game.block.BlockBreakAnimation;
 import ru.enke.sansara.Server;
 import ru.enke.sansara.network.handler.MessageHandler;
 import ru.enke.sansara.network.session.Session;
+import ru.enke.sansara.player.Player;
 
 public class PlayerBlockDiggingHandler implements MessageHandler<BlockDigging> {
 
@@ -19,22 +20,24 @@ public class PlayerBlockDiggingHandler implements MessageHandler<BlockDigging> {
 
     @Override
     public void handle(Session session, BlockDigging msg) {
-        if (session.getPlayer() != null) {
-            logger.info(msg);
+        if (session.getPlayer() == null) {
             return;
         }
+        Player p = session.getPlayer();
+        logger.info(msg);
+
         /* TODO send more packets */
         switch (msg.getAction()) {
             case DROP_ITEM:
                 break;
             case START_DIGGING:
-                server.sendGlobalPacket(new BlockBreakAnimation(session.getPlayer().getId(), msg.getPosition(), 5 /* TODO use correct values  */));
+                server.sendGlobalPacket(new BlockBreakAnimation(p.getId(), msg.getPosition(), 5 /* TODO use correct values  */));
                 break;
             case CANCEL_DIGGING:
-                server.sendGlobalPacket(new BlockBreakAnimation(session.getPlayer().getId(), msg.getPosition(), 0));
+                server.sendGlobalPacket(new BlockBreakAnimation(p.getId(), msg.getPosition(), -1));
                 break;
             case FINISH_DIGGING:
-                server.sendGlobalPacket(new BlockBreakAnimation(session.getPlayer().getId(), msg.getPosition(), 0));
+                server.sendGlobalPacket(new BlockBreakAnimation(p.getId(), msg.getPosition(), -1));
                 break;
             case SWAP_HANDS:
                 break;

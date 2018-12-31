@@ -115,7 +115,7 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
         player.setGameMode(GameMode.SURVIVAL);
 
         sendPacket(new JoinGame(player.getId(), player.getGameMode(), 0, Difficulty.NORMAL, 100, WorldType.DEFAULT, true));
-        sendPacket(new ServerPlayerAbilities(false, false, false, true, .1F, .1F));
+        sendPacket(new ServerPlayerAbilities(false, false, false, true, 0.05F, 0.1F));
         /* just a test
            TODO: Chunk system
         */

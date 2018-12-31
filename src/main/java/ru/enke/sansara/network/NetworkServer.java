@@ -7,9 +7,11 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import ru.enke.minecraft.protocol.codec.LengthCodec;
 import ru.enke.minecraft.protocol.codec.PacketCodec;
 import ru.enke.minecraft.protocol.packet.client.game.ClientChat;
+import ru.enke.minecraft.protocol.packet.client.game.ClientSettings;
 import ru.enke.minecraft.protocol.packet.client.game.ClientStatus;
 import ru.enke.minecraft.protocol.packet.client.game.InteractEntity;
 import ru.enke.minecraft.protocol.packet.client.game.block.BlockDigging;
+import ru.enke.minecraft.protocol.packet.client.game.position.ClientPlayerPositionLook;
 import ru.enke.minecraft.protocol.packet.client.game.position.PlayerLook;
 import ru.enke.minecraft.protocol.packet.client.game.position.PlayerPosition;
 import ru.enke.minecraft.protocol.packet.client.handshake.Handshake;
@@ -49,6 +51,8 @@ public class NetworkServer {
         messageHandlerRegistry.registerHandler(PlayerLook.class, new PositionLookHandler(server));
         messageHandlerRegistry.registerHandler(Handshake.class, new HandshakeHandler());
         messageHandlerRegistry.registerHandler(ClientStatus.class, new ClientStatusHandler());
+        messageHandlerRegistry.registerHandler(ClientSettings.class, new ClientSettingsHandler());
+        messageHandlerRegistry.registerHandler(ClientPlayerPositionLook.class, new PlayerPositionLookHandler(server));
     }
 
     public boolean bind(final int port) {

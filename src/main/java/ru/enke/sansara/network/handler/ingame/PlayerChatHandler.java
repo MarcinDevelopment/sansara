@@ -20,19 +20,20 @@ public class PlayerChatHandler implements MessageHandler<ClientChat> {
 
     @Override
     public void handle(Session session, ClientChat msg) {
-        if (session.getPlayer() != null) {
-            Player p = session.getPlayer();
-            String message = msg.getText();
-            if (message.length() > 100) {
-                message = message.substring(0, 100); //vanilla
-            }
-
-            if (message.startsWith("/")) {
-                p.sendMessage(new Message("There are no commands defined yet", MessageColor.RED));
-                return; //TODO: commands
-            }
-
-            server.sendGlobalPacket(new ServerChat(new Message(p.getProfile().getName() + ": " + message, MessageColor.GRAY), MessageType.CHAT));
+        if (session.getPlayer() == null) {
+            return;
         }
+        Player p = session.getPlayer();
+        String message = msg.getText();
+        if (message.length() > 100) {
+            message = message.substring(0, 100); //vanilla
+        }
+
+        if (message.startsWith("/")) {
+            p.sendMessage(new Message("There are no commands defined yet", MessageColor.RED));
+            return; //TODO: commands
+        }
+
+        server.sendGlobalPacket(new ServerChat(new Message(p.getProfile().getName() + ": " + message, MessageColor.GRAY), MessageType.CHAT));
     }
 }

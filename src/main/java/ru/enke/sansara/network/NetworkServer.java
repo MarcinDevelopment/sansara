@@ -6,11 +6,9 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import ru.enke.minecraft.protocol.codec.LengthCodec;
 import ru.enke.minecraft.protocol.codec.PacketCodec;
-import ru.enke.minecraft.protocol.packet.client.game.ClientChat;
-import ru.enke.minecraft.protocol.packet.client.game.ClientSettings;
-import ru.enke.minecraft.protocol.packet.client.game.ClientStatus;
-import ru.enke.minecraft.protocol.packet.client.game.InteractEntity;
+import ru.enke.minecraft.protocol.packet.client.game.*;
 import ru.enke.minecraft.protocol.packet.client.game.block.BlockDigging;
+import ru.enke.minecraft.protocol.packet.client.game.block.BlockPlace;
 import ru.enke.minecraft.protocol.packet.client.game.position.ClientPlayerPositionLook;
 import ru.enke.minecraft.protocol.packet.client.game.position.PlayerLook;
 import ru.enke.minecraft.protocol.packet.client.game.position.PlayerPosition;
@@ -53,6 +51,11 @@ public class NetworkServer {
         messageHandlerRegistry.registerHandler(ClientStatus.class, new ClientStatusHandler());
         messageHandlerRegistry.registerHandler(ClientSettings.class, new ClientSettingsHandler());
         messageHandlerRegistry.registerHandler(ClientPlayerPositionLook.class, new PlayerPositionLookHandler(server));
+        messageHandlerRegistry.registerHandler(SwingArm.class, new ClientSwingArmHandler(server));
+        messageHandlerRegistry.registerHandler(UseItem.class, new PlayerUseItemHandler());
+        messageHandlerRegistry.registerHandler(PlayerAction.class, new PlayerActionHandler(server));
+        messageHandlerRegistry.registerHandler(BlockPlace.class, new PlayerBlockPlaceHandler(server));
+        messageHandlerRegistry.registerHandler(PlayerLook.class, new PlayerLookHandler(server));
     }
 
     public boolean bind(final int port) {

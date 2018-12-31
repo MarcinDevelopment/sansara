@@ -105,17 +105,16 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
         setCompression(CompressionCodec.DEFAULT_COMPRESSION_THRESHOLD);
         sendPacket(new LoginSuccess(profile.getId().toString(), profile.getName()));
 
-        logger.info("Player {} joined game", profile.getName());
-
         final World world = server.getWorlds().iterator().next();
 
-        player = new Player(1, this, world, profile);
+        player = new Player(server.generateRandomEID(), this, world, profile);
         server.addPlayer(player);
         world.addPlayer(player);
+
         player.setGameMode(GameMode.SURVIVAL);
 
         sendPacket(new JoinGame(player.getId(), player.getGameMode(), 0, Difficulty.NORMAL, 100, WorldType.DEFAULT, true));
-        sendPacket(new ServerPlayerAbilities(false, false, false, true, 0.05F, 0.1F));
+        sendPacket(new ServerPlayerAbilities(false, false, true, true, 0.05F, 0.1F));
         /* just a test
            TODO: Chunk system
         */
@@ -133,14 +132,15 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
         }
         sendPacket(new SpawnPosition(world.getSpawnPosition()));
         sendPacket(new ServerPlayerPositionLook(8, 128, 8, 0, 0, 0, 1));
+        logger.info("Player {} joined game [entityid={}]", profile.getName(), player.getId());
 
         // Testing
         //server.sendGlobalPacket(new SpawnExpOrb(0, 8, 125, 8, 8));
         //server.sendGlobalPacket(new SpawnGlobalEntity(1, 1, 125, 8, 1)); //lighting strike
         server.sendGlobalPacket(new SpawnMob(99, UUID.randomUUID(),
-                EntityType.SLIME.getId(), 8, 125, 8, 0, 0, 0, 0, 0, 0, Collections.emptyList()));
+                EntityType.ZOMBIE.getId(), 8, 125, 8, 0, 0, 0, 0, 0, 0, Collections.emptyList()));
 
-        world.addEntity(99, EntityType.SLIME, new Position(8, 125, 8));
+        world.addEntity(99, EntityType.ZOMBIE, new Position(8, 125, 8));
         //Another test
         player.sendPacket(new PlayerListData(new Message("Hello, " + profile.getName(), MessageColor.GOLD), new Message("0x4A packet test")));
         //TODO: create 0x2E packet

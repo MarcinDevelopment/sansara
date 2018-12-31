@@ -4,7 +4,8 @@ import ru.enke.minecraft.protocol.packet.data.game.Position;
 
 public class Entity {
     private final EntityType entityType;
-    private final Position location;
+
+    private Position location;
 
     public Entity(EntityType entityType, Position location) {
         this.entityType = entityType;
@@ -17,6 +18,10 @@ public class Entity {
 
     public Position getLocation() {
         return location;
+    }
+
+    public void setLocation(Position location) {
+        this.location = location;
     }
 
     @Override

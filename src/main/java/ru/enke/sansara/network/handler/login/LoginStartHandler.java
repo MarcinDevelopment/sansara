@@ -1,6 +1,8 @@
 package ru.enke.sansara.network.handler.login;
 
 import ru.enke.minecraft.protocol.packet.client.login.LoginStart;
+import ru.enke.minecraft.protocol.packet.data.message.Message;
+import ru.enke.minecraft.protocol.packet.data.message.MessageColor;
 import ru.enke.sansara.Server;
 import ru.enke.sansara.login.LoginProfile;
 import ru.enke.sansara.network.handler.MessageHandler;
@@ -18,11 +20,11 @@ public class LoginStartHandler implements MessageHandler<LoginStart> {
 
     @Override
     public void handle(final Session session, final LoginStart loginStart) {
-        if(server.isOnlineMode()) {
-           // TODO: Add online login.
+        if (server.isOnlineMode()) {
+            // TODO: Add online login.
         } else {
             session.joinGame(new LoginProfile(UUID.randomUUID(), loginStart.getUsername()));
+            server.broadcast(new Message(loginStart.getUsername() + " joined server", MessageColor.YELLOW));
         }
     }
-
 }

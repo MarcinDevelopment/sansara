@@ -20,8 +20,28 @@ public class PlayerBlockDiggingHandler implements MessageHandler<BlockDigging> {
     @Override
     public void handle(Session session, BlockDigging msg) {
         if (session.getPlayer() != null) {
-            logger.info(session.getPlayer().getProfile().getName() + ": " + msg.toString());
-            server.sendGlobalPacket(new BlockBreakAnimation(session.getPlayer().getId(), msg.getPosition(), 1 /* TODO use correct values  */));
+            logger.info(msg);
+            return;
+        }
+        /* TODO send more packets */
+        switch (msg.getAction()) {
+            case DROP_ITEM:
+                break;
+            case START_DIGGING:
+                server.sendGlobalPacket(new BlockBreakAnimation(session.getPlayer().getId(), msg.getPosition(), 5 /* TODO use correct values  */));
+                break;
+            case CANCEL_DIGGING:
+                server.sendGlobalPacket(new BlockBreakAnimation(session.getPlayer().getId(), msg.getPosition(), 0));
+                break;
+            case FINISH_DIGGING:
+                server.sendGlobalPacket(new BlockBreakAnimation(session.getPlayer().getId(), msg.getPosition(), 0));
+                break;
+            case SWAP_HANDS:
+                break;
+            case DROP_ITEM_STACK:
+                break;
+            case RELEASE_USE_ITEM:
+                break;
         }
     }
 }

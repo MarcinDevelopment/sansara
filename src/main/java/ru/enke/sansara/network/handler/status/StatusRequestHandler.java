@@ -24,8 +24,7 @@ public class StatusRequestHandler implements MessageHandler<StatusRequest> {
     public void handle(final Session session, final StatusRequest statusRequest) {
         final Version version = new Version(Server.GAME_VERSION, Protocol.VERSION);
 
-        // TODO: Add players online.
-        final Players players = new Players(0, 100);
+        final Players players = new Players(server.getPlayers().size(), 20);
         final Message description = new Message("Sansara server", MessageColor.YELLOW);
         final String favicon = server.getFavicon();
 

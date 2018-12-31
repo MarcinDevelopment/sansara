@@ -1,12 +1,16 @@
 package ru.enke.sansara.player;
 
 import ru.enke.minecraft.protocol.packet.PacketMessage;
+import ru.enke.minecraft.protocol.packet.data.game.GameMode;
+import ru.enke.minecraft.protocol.packet.data.game.Position;
+import ru.enke.minecraft.protocol.packet.data.message.Message;
+import ru.enke.minecraft.protocol.packet.data.message.MessageType;
+import ru.enke.minecraft.protocol.packet.server.game.ServerChat;
 import ru.enke.sansara.World;
 import ru.enke.sansara.login.LoginProfile;
 import ru.enke.sansara.network.session.Session;
 
 import java.net.SocketAddress;
-import java.util.UUID;
 
 public class Player {
 
@@ -14,6 +18,8 @@ public class Player {
     private final World world;
     private final LoginProfile profile;
     private final Session session;
+    private Position location;
+    private GameMode gameMode;
 
     public Player(final int id, final Session session, final World world, final LoginProfile profile) {
         this.id = id;
@@ -42,4 +48,23 @@ public class Player {
         return session.getAddress();
     }
 
+    public Position getLocation() {
+        return location;
+    }
+
+    public void setLocation(Position location) {
+        this.location = location;
+    }
+
+    public GameMode getGameMode() {
+        return gameMode;
+    }
+
+    public void setGameMode(GameMode gameMode) {
+        this.gameMode = gameMode;
+    }
+
+    public void sendMessage(Message message) {
+        sendPacket(new ServerChat(message, MessageType.CHAT));
+    }
 }

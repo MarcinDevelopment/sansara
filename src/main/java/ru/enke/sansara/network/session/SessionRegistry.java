@@ -1,13 +1,12 @@
 package ru.enke.sansara.network.session;
 
-import io.netty.util.internal.ConcurrentSet;
-
 import java.util.Collections;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class SessionRegistry {
 
-    private final Set<Session> sessions = new ConcurrentSet<>();
+    private final Set<Session> sessions = ConcurrentHashMap.newKeySet();
 
     void addSession(final Session session) {
         sessions.add(session);

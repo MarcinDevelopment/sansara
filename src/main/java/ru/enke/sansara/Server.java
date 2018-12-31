@@ -18,10 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -122,5 +119,9 @@ public class Server extends PlayerRegistry implements Runnable {
 
     public void broadcast(Message message) {
         sendGlobalPacket(new ServerChat(message, MessageType.CHAT));
+    }
+
+    public int generateRandomEID() {
+        return new Random().nextInt(999) + 1;
     }
 }

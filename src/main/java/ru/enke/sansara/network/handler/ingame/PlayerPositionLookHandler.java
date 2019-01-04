@@ -10,13 +10,13 @@ import ru.enke.sansara.player.Player;
 
 public class PlayerPositionLookHandler implements MessageHandler<ClientPlayerPositionLook> {
 
+    private static final Logger logger = LogManager.getLogger();
     private final Server server;
     private Player p;
     private double x, y, z;
     private float pitch, yaw;
     private boolean isOnGround;
     private int id;
-    private static final Logger logger = LogManager.getLogger();
 
     public PlayerPositionLookHandler(final Server server) {
         this.server = server;

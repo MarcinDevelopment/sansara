@@ -14,7 +14,7 @@ public class LoginProfile {
         this(uuid, name, Collections.emptyMap());
     }
 
-    public LoginProfile(final UUID id, final String name, final Map<String, LoginProperty> properties) {
+    private LoginProfile(final UUID id, final String name, final Map<String, LoginProperty> properties) {
         this.id = id;
         this.name = name;
         this.properties = properties;

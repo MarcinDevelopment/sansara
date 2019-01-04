@@ -8,7 +8,7 @@ import ru.enke.minecraft.protocol.packet.data.game.Position;
 import ru.enke.minecraft.protocol.packet.data.message.Message;
 import ru.enke.minecraft.protocol.packet.data.message.MessageType;
 import ru.enke.minecraft.protocol.packet.server.game.ServerChat;
-import ru.enke.sansara.Block.BlockStorage;
+import ru.enke.sansara.Command.CommandRegistry;
 import ru.enke.sansara.network.NetworkServer;
 import ru.enke.sansara.network.session.Session;
 import ru.enke.sansara.network.session.SessionRegistry;
@@ -29,7 +29,7 @@ public class Server extends PlayerRegistry implements Runnable {
 
     public static final String GAME_VERSION = "1.12.2";
     private static final Logger logger = LogManager.getLogger();
-
+    private static CommandRegistry commandRegistry;
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Game Thread"));
     private final SessionRegistry sessionRegistry = new SessionRegistry();
     private final NetworkServer networkServer = new NetworkServer(this, sessionRegistry);
@@ -47,7 +47,9 @@ public class Server extends PlayerRegistry implements Runnable {
         final String favicon = readServerIcon();
         final boolean onlineMode = false;
         final Server server = new Server(favicon, onlineMode);
-        new BlockStorage();
+        //new BlockStorage();
+        commandRegistry = new CommandRegistry(server);
+        commandRegistry.register();
         server.start();
     }
 
@@ -60,6 +62,10 @@ public class Server extends PlayerRegistry implements Runnable {
 
         final byte[] bytes = Files.readAllBytes(path);
         return "data:image/png;base64," + Base64.getEncoder().encodeToString(bytes);
+    }
+
+    public CommandRegistry getCClass() {
+        return commandRegistry;
     }
 
     private void start() {

@@ -1,6 +1,8 @@
 package ru.enke.sansara;
 
+import ru.enke.minecraft.protocol.packet.data.game.GameState;
 import ru.enke.minecraft.protocol.packet.data.game.Position;
+import ru.enke.minecraft.protocol.packet.server.game.ChangeGameState;
 import ru.enke.minecraft.protocol.packet.server.game.TimeUpdate;
 import ru.enke.sansara.Entity.Entity;
 import ru.enke.sansara.Entity.EntityType;
@@ -19,6 +21,7 @@ public class World extends PlayerRegistry implements Runnable {
     private long time;
     private HashMap<Integer, Entity> worldEntities = new HashMap<>();
     //private Map<ChunkPosition, Chunk> worldChunks = new HashMap<>();
+    private boolean storm;
 
 
     World(final String name, final long time, final long age) {
@@ -43,12 +46,24 @@ public class World extends PlayerRegistry implements Runnable {
         }
     }
 
+    @Override
+    public void addPlayer(final Player player) {
+        players.put(player.getProfile().getName(), player);
+        if (isStorm()) {
+            player.sendPacket(new ChangeGameState(GameState.BEGIN_RAINING, 0));
+        }
+    }
+
     public String getName() {
         return name;
     }
 
     public long getTime() {
         return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 
     public long getAge() {
@@ -65,5 +80,13 @@ public class World extends PlayerRegistry implements Runnable {
 
     public Entity getEntityBySpawnId(int spawnid) {
         return worldEntities.get(spawnid);
+    }
+
+    public boolean isStorm() {
+        return storm;
+    }
+
+    public void setStorm(boolean storm) {
+        this.storm = storm;
     }
 }

@@ -18,6 +18,8 @@ public class CommandRegistry {
         commands.put("stop", new stopCommand(server, null));
         commands.put("memory", new memoryCommand(server, null));
         commands.put("kick", new kickCommand(server, null));
+        commands.put("time", new timeCommand(server, null));
+        commands.put("gamemode", new gamemodeCommand(server, null));
     }
 
     public HashMap<String, RawCommand> getCommands() {

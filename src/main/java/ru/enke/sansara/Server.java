@@ -29,10 +29,10 @@ public class Server extends PlayerRegistry implements Runnable {
 
     public static final String GAME_VERSION = "1.12.2";
     private static final Logger logger = LogManager.getLogger();
-    private static CommandRegistry commandRegistry;
-    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Game Thread"));
     private static final SessionRegistry sessionRegistry = new SessionRegistry();
+    private static CommandRegistry commandRegistry;
     private static NetworkServer networkServer;
+    private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Game Thread"));
     private final Map<String, World> worlds;
     private final boolean onlineMode;
     private final String favicon;

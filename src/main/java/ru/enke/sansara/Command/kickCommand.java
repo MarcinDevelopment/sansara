@@ -36,5 +36,6 @@ public class kickCommand implements RawCommand {
             return;
         }
         target.kick(reason.toString());
+        sender.sendMessage(new Message("Kicked " + args[1] + " for reason '" + reason + "'"));
     }
 }

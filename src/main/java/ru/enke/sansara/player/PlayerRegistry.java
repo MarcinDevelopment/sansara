@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class PlayerRegistry {
 
-    private final Map<String, Player> players = new HashMap<>();
+    protected final Map<String, Player> players = new HashMap<>();
 
     @Nullable
     public Player getPlayerByName(final String name) {

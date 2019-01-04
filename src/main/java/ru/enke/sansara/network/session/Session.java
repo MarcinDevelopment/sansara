@@ -107,13 +107,13 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
 
         final World world = server.getWorlds().iterator().next();
 
+        //world.setStorm(true); //TEMP
+
         player = new Player(server.generateRandomEID(), this, world, profile);
 
         player.setOperator(true); //TEMP
 
         server.addPlayer(player);
-        world.addPlayer(player);
-
         player.setGameMode(GameMode.SURVIVAL);
 
         sendPacket(new JoinGame(player.getId(), player.getGameMode(), 0, Difficulty.NORMAL, 100, WorldType.DEFAULT, true));
@@ -136,6 +136,7 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
         sendPacket(new SpawnPosition(world.getSpawnPosition()));
         sendPacket(new ServerPlayerPositionLook(world.getSpawnPosition().getX(), world.getSpawnPosition().getY(), world.getSpawnPosition().getZ(), 0, 0, 0, 1));
         logger.info("Player {} joined game [entityid={}]", profile.getName(), player.getId());
+        world.addPlayer(player);
 
         // Testing
         //server.sendGlobalPacket(new SpawnExpOrb(0, 8, 125, 8, 8));

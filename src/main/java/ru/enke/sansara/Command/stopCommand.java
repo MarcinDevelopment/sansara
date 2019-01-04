@@ -30,7 +30,7 @@ public class stopCommand implements RawCommand {
             reason.append(args[i]).append(" ");
         }
 
-        sender.sendMessage(new Message("Stopping server", MessageColor.RED));
+        sender.sendMessage(new Message("Stopping the server..", MessageColor.RED));
         for (Player p : server.getPlayers()) {
             p.kick(reason.toString());
         }

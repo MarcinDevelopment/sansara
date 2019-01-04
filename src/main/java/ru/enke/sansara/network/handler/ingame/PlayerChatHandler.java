@@ -8,6 +8,7 @@ import ru.enke.minecraft.protocol.packet.server.game.ServerChat;
 import ru.enke.sansara.Command.CommandRegistry;
 import ru.enke.sansara.Command.RawCommand;
 import ru.enke.sansara.Server;
+import ru.enke.sansara.Utils.ChatColor;
 import ru.enke.sansara.network.handler.MessageHandler;
 import ru.enke.sansara.network.session.Session;
 import ru.enke.sansara.player.Player;
@@ -38,7 +39,7 @@ public class PlayerChatHandler implements MessageHandler<ClientChat> {
             return;
         }
 
-        server.sendGlobalPacket(new ServerChat(new Message(p.getProfile().getName() + ": " + message, MessageColor.GRAY), MessageType.CHAT));
+        server.sendGlobalPacket(new ServerChat(new Message(ChatColor.GRAY + p.getProfile().getName() + ": " + ChatColor.WHITE + message), MessageType.CHAT));
     }
 
     private void executeCommand() {
@@ -47,7 +48,7 @@ public class PlayerChatHandler implements MessageHandler<ClientChat> {
         RawCommand command;
         if (commandRegistry.getCommands().containsKey(cmd[0])) {
             command = commandRegistry.getCommands().get(cmd[0]);
-            command.cmd(p, cmd);
+            command.execute(p, cmd);
         } else {
             p.sendMessage(new Message("Unknown command", MessageColor.RED));
         }

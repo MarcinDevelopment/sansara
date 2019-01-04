@@ -148,4 +148,8 @@ public class Server extends PlayerRegistry implements Runnable {
     public int generateRandomEID() {
         return new Random().nextInt(999) + 1;
     }
+
+    public void stop() {
+        networkServer.stop();
+    }
 }

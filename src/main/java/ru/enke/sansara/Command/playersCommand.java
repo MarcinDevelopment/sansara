@@ -14,7 +14,7 @@ public class playersCommand implements RawCommand {
     }
 
     @Override
-    public void cmd(Player sender, String[] args) {
+    public void execute(Player sender, String[] args) {
         StringBuilder sb = new StringBuilder();
         for (Player p : server.getPlayers()) {
             sb.append(p.getProfile().getName()).append(", ");

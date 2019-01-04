@@ -4,9 +4,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import ru.enke.minecraft.protocol.packet.client.game.block.BlockDigging;
 import ru.enke.minecraft.protocol.packet.data.game.BlockState;
-import ru.enke.minecraft.protocol.packet.data.game.Position;
 import ru.enke.minecraft.protocol.packet.server.game.block.BlockBreakAnimation;
 import ru.enke.minecraft.protocol.packet.server.game.block.BlockChange;
+import ru.enke.minecraft.protocol.packet.server.game.player.setExperience;
 import ru.enke.sansara.Server;
 import ru.enke.sansara.network.handler.MessageHandler;
 import ru.enke.sansara.network.session.Session;
@@ -29,9 +29,9 @@ public class PlayerBlockDiggingHandler implements MessageHandler<BlockDigging> {
         }
         Player p = session.getPlayer();
         logger.info(msg);
-        int x = msg.getPosition().getX();
+        /*int x = msg.getPosition().getX();
         int y = msg.getPosition().getY();
-        int z = msg.getPosition().getZ();
+        int z = msg.getPosition().getZ();*/
 
         /* TODO send more packets */
         switch (msg.getAction()) {
@@ -47,8 +47,18 @@ public class PlayerBlockDiggingHandler implements MessageHandler<BlockDigging> {
                 break;
             case FINISH_DIGGING:
                 server.sendPacketToNearbyPlayers(p, new BlockBreakAnimation(eId, msg.getPosition(), -1), false);
-                server.sendPacketToNearbyPlayers(p, new BlockChange(new Position(x, y, z), new BlockState(0 /* air */, 0)), false);
+                server.sendPacketToNearbyPlayers(p, new BlockChange(msg.getPosition(), new BlockState(0 /* air */, 0)), false);
                 //TODO: drop item
+
+                /* TESTING 0x40 packet */
+                p.addToExperienceBar(0.05F);
+                if (p.getExperienceBar() > 1.0F) {
+                    p.setExperienceBar(0.0F);
+                    p.addExperienceLevel(1);
+                }
+                p.sendPacket(new setExperience(p.getExperienceBar(), p.getExperienceLevel(), 100));
+                /* end */
+
                 break;
             case SWAP_HANDS:
                 break;

@@ -108,6 +108,9 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
         final World world = server.getWorlds().iterator().next();
 
         player = new Player(server.generateRandomEID(), this, world, profile);
+
+        player.setOperator(true); //TEMP
+
         server.addPlayer(player);
         world.addPlayer(player);
 

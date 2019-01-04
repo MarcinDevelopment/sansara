@@ -15,6 +15,9 @@ public class CommandRegistry {
 
     public void register() {
         commands.put("players", new playersCommand(server, null));
+        commands.put("stop", new stopCommand(server, null));
+        commands.put("memory", new memoryCommand(server, null));
+        commands.put("kick", new kickCommand(server, null));
     }
 
     public HashMap<String, RawCommand> getCommands() {

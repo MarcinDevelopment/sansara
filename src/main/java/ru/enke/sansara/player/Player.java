@@ -5,6 +5,7 @@ import ru.enke.minecraft.protocol.packet.data.game.GameMode;
 import ru.enke.minecraft.protocol.packet.data.game.Position;
 import ru.enke.minecraft.protocol.packet.data.message.Message;
 import ru.enke.minecraft.protocol.packet.data.message.MessageType;
+import ru.enke.minecraft.protocol.packet.server.game.Disconnect;
 import ru.enke.minecraft.protocol.packet.server.game.ServerChat;
 import ru.enke.sansara.World;
 import ru.enke.sansara.login.LoginProfile;
@@ -22,6 +23,9 @@ public class Player {
     private GameMode gameMode;
     private int renderDistance;
     private String locale;
+    private boolean operator;
+    private float experienceBar = 0.0F;
+    private int experienceLevel = 0;
 
     public Player(final int id, final Session session, final World world, final LoginProfile profile) {
         this.id = id;
@@ -85,4 +89,41 @@ public class Player {
     public void setLocale(String locale) {
         this.locale = locale;
     }
+
+    public boolean isOperator() {
+        return operator;
+    }
+
+    public void setOperator(boolean operator) {
+        this.operator = operator;
+    }
+
+    public void kick(String reason) {
+        sendPacket(new Disconnect(new Message(reason)));
+    }
+
+    public float getExperienceBar() {
+        return experienceBar;
+    }
+
+    public void setExperienceBar(float experienceBar) {
+        this.experienceBar = experienceBar;
+    }
+
+    public void addToExperienceBar(float experienceBar) {
+        this.experienceBar += experienceBar;
+    }
+
+    public int getExperienceLevel() {
+        return experienceLevel;
+    }
+
+    public void setExperienceLevel(int experienceLevel) {
+        this.experienceLevel = experienceLevel;
+    }
+
+    public void addExperienceLevel(int experienceLevel) {
+        this.experienceLevel += experienceLevel;
+    }
+
 }

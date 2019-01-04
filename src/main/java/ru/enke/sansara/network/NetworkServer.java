@@ -56,6 +56,7 @@ public class NetworkServer {
         messageHandlerRegistry.registerHandler(PlayerAction.class, new PlayerActionHandler(server));
         messageHandlerRegistry.registerHandler(BlockPlace.class, new PlayerBlockPlaceHandler(server));
         messageHandlerRegistry.registerHandler(PlayerLook.class, new PlayerLookHandler(server));
+        messageHandlerRegistry.registerHandler(TabCompleteRequest.class, new PlayerTabCompleteRequestHandler(server));
     }
 
     public boolean bind(final int port) {

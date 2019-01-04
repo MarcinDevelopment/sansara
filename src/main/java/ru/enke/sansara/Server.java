@@ -31,8 +31,8 @@ public class Server extends PlayerRegistry implements Runnable {
     private static final Logger logger = LogManager.getLogger();
     private static CommandRegistry commandRegistry;
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Game Thread"));
-    private final SessionRegistry sessionRegistry = new SessionRegistry();
-    private final NetworkServer networkServer = new NetworkServer(this, sessionRegistry);
+    private static final SessionRegistry sessionRegistry = new SessionRegistry();
+    private static NetworkServer networkServer;
     private final Map<String, World> worlds;
     private final boolean onlineMode;
     private final String favicon;
@@ -47,9 +47,9 @@ public class Server extends PlayerRegistry implements Runnable {
         final String favicon = readServerIcon();
         final boolean onlineMode = false;
         final Server server = new Server(favicon, onlineMode);
-        //new BlockStorage();
         commandRegistry = new CommandRegistry(server);
         commandRegistry.register();
+        networkServer = new NetworkServer(server, sessionRegistry);
         server.start();
     }
 

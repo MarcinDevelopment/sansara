@@ -17,4 +17,9 @@ public class ChunkCoordinates {
     public int getChunkZ() {
         return this.chunkZ;
     }
+
+    @Override
+    public String toString() {
+        return "chunkX=" + this.chunkX + ", chunkZ=" + this.chunkZ;
+    }
 }

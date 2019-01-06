@@ -1,10 +1,12 @@
 package ru.enke.sansara;
 
 import org.pmw.tinylog.Logger;
+import ru.enke.minecraft.protocol.packet.data.game.BlockState;
 import ru.enke.minecraft.protocol.packet.data.game.GameState;
 import ru.enke.minecraft.protocol.packet.data.game.Position;
 import ru.enke.minecraft.protocol.packet.server.game.ChangeGameState;
 import ru.enke.minecraft.protocol.packet.server.game.TimeUpdate;
+import ru.enke.minecraft.protocol.packet.server.game.block.BlockChange;
 import ru.enke.minecraft.protocol.packet.server.game.chunk.ChunkData;
 import ru.enke.sansara.Entity.Entity;
 import ru.enke.sansara.Entity.EntityType;
@@ -23,7 +25,7 @@ public class World extends PlayerRegistry implements Runnable {
     private static final int TIME_UPDATE_INTERVAL = 20;
     private final Position spawnPosition = new Position(8, 125, 8);
     private final String name;
-    private final int SPAWN_SIZE = 4;
+    private final int SPAWN_SIZE = 1;
     private long age;
     private long time;
     private HashMap<Integer, Entity> worldEntities = new HashMap<>();
@@ -87,12 +89,12 @@ public class World extends PlayerRegistry implements Runnable {
         }
 
         //TEST
-        //for (Chunk chunks : getAllChunks()) {
-        for (ChunkCoordinates chunkCoordinates : worldChunks.keySet()) {
-            Logger.debug("chunk position: " + chunkCoordinates.getChunkX() + " | " + chunkCoordinates.getChunkZ());
-            player.sendPacket(new ChunkData(chunkCoordinates.getChunkX(), chunkCoordinates.getChunkZ(), true, 0, new byte[256]));
+        for (Chunk chunks : getAllChunks()) {
+            player.sendPacket(new ChunkData(chunks.getX(), chunks.getZ(), true, 0, new byte[256]));
+            //send one block
+            player.sendPacket(new BlockChange(new Position(spawnPosition.getX(), spawnPosition.getY() - 1, spawnPosition.getZ()), new BlockState(2, 0)));
         }
-        //}
+
     }
 
     public String getName() {

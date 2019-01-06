@@ -3,6 +3,7 @@ package ru.enke.sansara;
 import org.jetbrains.annotations.Nullable;
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.Logger;
+import ru.enke.minecraft.protocol.Protocol;
 import ru.enke.minecraft.protocol.packet.PacketMessage;
 import ru.enke.minecraft.protocol.packet.data.game.Position;
 import ru.enke.minecraft.protocol.packet.data.message.Message;
@@ -46,13 +47,16 @@ public class Server extends PlayerRegistry implements Runnable {
 
     public static void main(final String[] args) throws IOException {
         Configurator.currentConfig().formatPattern("[{level} {date:HH:mm:ss}] {message}").activate();
-
+        Logger.info("Starting server | version {} ({})", GAME_VERSION, Protocol.VERSION);
         final String favicon = readServerIcon();
         final boolean onlineMode = false;
         final Server server = new Server(favicon, onlineMode);
         commandRegistry = new CommandRegistry(server);
         commandRegistry.register();
         networkServer = new NetworkServer(server, sessionRegistry);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> Logger.info("Stopping server...")));
+
         server.start();
     }
 

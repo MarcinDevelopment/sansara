@@ -104,7 +104,7 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
         sendPacket(new LoginSuccess(profile.getId().toString(), profile.getName()));
 
         final World world = server.getWorlds().iterator().next();
-        world.setStorm(true); //TEMP
+        world.setStorm(false); //TEMP
 
         player = new Player(server.generateRandomEID(), this, world, profile);
 

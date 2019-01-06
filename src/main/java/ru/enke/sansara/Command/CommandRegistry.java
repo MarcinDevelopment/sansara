@@ -1,5 +1,6 @@
 package ru.enke.sansara.Command;
 
+import org.pmw.tinylog.Logger;
 import ru.enke.sansara.Server;
 
 import java.util.HashMap;
@@ -20,6 +21,7 @@ public class CommandRegistry {
         commands.put("kick", new kickCommand(server, null));
         commands.put("time", new timeCommand(server, null));
         commands.put("gamemode", new gamemodeCommand(server, null));
+        Logger.info("Loaded " + commands.size() + " commands");
     }
 
     public HashMap<String, RawCommand> getCommands() {

@@ -1,7 +1,5 @@
 package ru.enke.sansara.network.handler.ingame;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import ru.enke.minecraft.protocol.packet.client.game.TabCompleteRequest;
 import ru.enke.minecraft.protocol.packet.server.game.TabCompleteResponse;
 import ru.enke.sansara.Server;
@@ -15,7 +13,6 @@ import java.util.List;
 
 public class PlayerTabCompleteRequestHandler implements MessageHandler<TabCompleteRequest> {
 
-    private static final Logger logger = LogManager.getLogger();
     private final Server server;
     private List<String> commands = new ArrayList<>();
 

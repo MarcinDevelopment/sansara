@@ -1,7 +1,5 @@
 package ru.enke.sansara.network.handler.ingame;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import ru.enke.minecraft.protocol.packet.client.game.position.ClientPlayerPositionLook;
 import ru.enke.sansara.Server;
 import ru.enke.sansara.network.handler.MessageHandler;
@@ -10,7 +8,6 @@ import ru.enke.sansara.player.Player;
 
 public class PlayerPositionLookHandler implements MessageHandler<ClientPlayerPositionLook> {
 
-    private static final Logger logger = LogManager.getLogger();
     private final Server server;
     private Player p;
     private double x, y, z;
@@ -37,7 +34,7 @@ public class PlayerPositionLookHandler implements MessageHandler<ClientPlayerPos
         this.pitch = msg.getPitch();
         this.yaw = msg.getYaw();
         this.isOnGround = msg.getGround();
-        logger.info("x: " + x + " y: " + y + " z: " + z);
+        //Logger.info("x: " + x + " y: " + y + " z: " + z);
         updatePlayerLocation();
     }
 

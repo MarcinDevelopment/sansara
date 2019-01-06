@@ -1,7 +1,6 @@
 package ru.enke.sansara.network.handler.ingame;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.pmw.tinylog.Logger;
 import ru.enke.minecraft.protocol.packet.client.game.PlayerAction;
 import ru.enke.sansara.Server;
 import ru.enke.sansara.network.handler.MessageHandler;
@@ -10,7 +9,6 @@ import ru.enke.sansara.player.Player;
 
 public class PlayerActionHandler implements MessageHandler<PlayerAction> {
 
-    private static final Logger logger = LogManager.getLogger();
     private final Server server;
 
     public PlayerActionHandler(final Server server) {
@@ -23,7 +21,7 @@ public class PlayerActionHandler implements MessageHandler<PlayerAction> {
             return;
         }
         Player p = session.getPlayer();
-        logger.info(msg);
+        Logger.info(msg);
         switch (msg.getType()) {
             case LEAVE_BED:
                 break;

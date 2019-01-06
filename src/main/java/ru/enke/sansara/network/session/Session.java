@@ -3,19 +3,18 @@ package ru.enke.sansara.network.session;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import org.pmw.tinylog.Logger;
 import ru.enke.minecraft.protocol.codec.CompressionCodec;
 import ru.enke.minecraft.protocol.packet.PacketMessage;
-import ru.enke.minecraft.protocol.packet.data.game.*;
+import ru.enke.minecraft.protocol.packet.data.game.Difficulty;
+import ru.enke.minecraft.protocol.packet.data.game.GameMode;
+import ru.enke.minecraft.protocol.packet.data.game.WorldType;
 import ru.enke.minecraft.protocol.packet.data.message.Message;
 import ru.enke.minecraft.protocol.packet.data.message.MessageColor;
 import ru.enke.minecraft.protocol.packet.server.game.JoinGame;
 import ru.enke.minecraft.protocol.packet.server.game.PlayerListData;
 import ru.enke.minecraft.protocol.packet.server.game.SpawnPosition;
-import ru.enke.minecraft.protocol.packet.server.game.block.BlockChange;
-import ru.enke.minecraft.protocol.packet.server.game.chunk.ChunkData;
 import ru.enke.minecraft.protocol.packet.server.game.entity.SpawnMob;
 import ru.enke.minecraft.protocol.packet.server.game.player.ServerPlayerAbilities;
 import ru.enke.minecraft.protocol.packet.server.game.player.ServerPlayerPositionLook;
@@ -41,7 +40,6 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
     public static final String PACKET_CODEC_NAME = "packet";
     public static final String SESSION_HANDLER_NAME = "session";
     private static final String COMPRESSION_CODEC_NAME = "compression";
-    private static final Logger logger = LogManager.getLogger();
 
     private final Queue<PacketMessage> messageQueue = new LinkedBlockingQueue<>();
     private final MessageHandlerRegistry messageHandlerRegistry;
@@ -60,13 +58,13 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
 
     @Override
     public void channelActive(final ChannelHandlerContext ctx) {
-        logger.debug("New network connection from ip {}", getAddress());
+        Logger.debug("New network connection from ip {}", getAddress());
         sessionRegistry.addSession(this);
     }
 
     @Override
     public void channelInactive(final ChannelHandlerContext ctx) {
-        logger.debug("Disconnected {}", getAddress());
+        Logger.debug("Disconnected {}", getAddress());
         sessionRegistry.removeSession(this);
 
         if (player != null) {
@@ -78,8 +76,8 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final PacketMessage msg) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("Received packet {}", msg);
+        if (Server.debug()) {
+            Logger.info("Received packet {}", msg);
         }
 
         messageQueue.add(msg);
@@ -95,7 +93,7 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
             if (handler != null) {
                 handler.handle(this, msg);
             } else {
-                logger.warn("Message {} missing handler", msg);
+                Logger.error("Message {} missing handler", msg);
             }
         }
     }
@@ -106,8 +104,7 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
         sendPacket(new LoginSuccess(profile.getId().toString(), profile.getName()));
 
         final World world = server.getWorlds().iterator().next();
-
-        //world.setStorm(true); //TEMP
+        world.setStorm(true); //TEMP
 
         player = new Player(server.generateRandomEID(), this, world, profile);
 
@@ -118,25 +115,12 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
 
         sendPacket(new JoinGame(player.getId(), player.getGameMode(), 0, Difficulty.NORMAL, 100, WorldType.DEFAULT, true));
         sendPacket(new ServerPlayerAbilities(false, false, true, true, 0.05F, 0.1F));
-        /* just a test
-           TODO: Chunk system
-        */
-        for (int x = 0; x <= 16; x++) {
-            for (int z = 0; z <= 16; z++) {
-                for (int y = 116; y <= 124; y++) {
-                    if (!(y >= 124)) {
-                        sendPacket(new BlockChange(new Position(x, y, z), new BlockState(1, 0)));
-                    } else {
-                        sendPacket(new BlockChange(new Position(x, y, z), new BlockState(2, 0)));
-                    }
-                    sendPacket(new ChunkData(x, z, true, 0, new byte[256]));
-                }
-            }
-        }
+
+        world.addPlayer(player);
+
         sendPacket(new SpawnPosition(world.getSpawnPosition()));
         sendPacket(new ServerPlayerPositionLook(world.getSpawnPosition().getX(), world.getSpawnPosition().getY(), world.getSpawnPosition().getZ(), 0, 0, 0, 1));
-        logger.info("Player {} joined game [entityid={}]", profile.getName(), player.getId());
-        world.addPlayer(player);
+        Logger.info("Player {} joined game [entityid={}]", profile.getName(), player.getId());
 
         // Testing
         //server.sendGlobalPacket(new SpawnExpOrb(0, 8, 125, 8, 8));
@@ -154,14 +138,13 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
     private void setCompression(final int threshold) {
         sendPacket(new LoginSetCompression(threshold));
         channel.pipeline().addBefore(PACKET_CODEC_NAME, COMPRESSION_CODEC_NAME, new CompressionCodec(threshold));
-        logger.trace("Enable compression with {} threshold", threshold);
+        Logger.info("Enable compression with {} threshold", threshold);
     }
 
     public void sendPacket(final PacketMessage msg) {
-        if (logger.isTraceEnabled()) {
-            logger.trace("Sending packet {}", msg);
+        if (Server.debug()) {
+            Logger.info("Sending packet {}", msg);
         }
-
         channel.writeAndFlush(msg);
     }
 

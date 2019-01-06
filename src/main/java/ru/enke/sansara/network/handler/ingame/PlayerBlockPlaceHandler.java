@@ -1,7 +1,6 @@
 package ru.enke.sansara.network.handler.ingame;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.pmw.tinylog.Logger;
 import ru.enke.minecraft.protocol.packet.client.game.block.BlockPlace;
 import ru.enke.minecraft.protocol.packet.data.game.BlockState;
 import ru.enke.minecraft.protocol.packet.data.game.Position;
@@ -12,8 +11,6 @@ import ru.enke.sansara.network.session.Session;
 import ru.enke.sansara.player.Player;
 
 public class PlayerBlockPlaceHandler implements MessageHandler<BlockPlace> {
-
-    private static final Logger logger = LogManager.getLogger();
 
     private final Server server;
 
@@ -28,7 +25,7 @@ public class PlayerBlockPlaceHandler implements MessageHandler<BlockPlace> {
             return;
         }
         Player p = session.getPlayer();
-        logger.info(msg);
+        Logger.info(msg);
         int x = msg.getPosition().getX();
         int y = msg.getPosition().getY();
         int z = msg.getPosition().getZ();

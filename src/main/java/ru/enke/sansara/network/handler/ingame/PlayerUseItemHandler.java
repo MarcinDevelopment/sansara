@@ -1,7 +1,6 @@
 package ru.enke.sansara.network.handler.ingame;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.pmw.tinylog.Logger;
 import ru.enke.minecraft.protocol.packet.client.game.UseItem;
 import ru.enke.sansara.network.handler.MessageHandler;
 import ru.enke.sansara.network.session.Session;
@@ -9,7 +8,6 @@ import ru.enke.sansara.player.Player;
 
 public class PlayerUseItemHandler implements MessageHandler<UseItem> {
 
-    private static final Logger logger = LogManager.getLogger();
     //private final Server server;
 
     public PlayerUseItemHandler(/*final Server server*/) {
@@ -22,7 +20,7 @@ public class PlayerUseItemHandler implements MessageHandler<UseItem> {
             return;
         }
         Player p = session.getPlayer();
-        logger.info(msg);
+        Logger.info(msg);
         //server.sendGlobalPacket(new Animation(p.getId(), *); //temp
     }
 }

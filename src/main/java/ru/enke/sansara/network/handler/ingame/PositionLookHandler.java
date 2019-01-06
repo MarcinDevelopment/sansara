@@ -1,7 +1,5 @@
 package ru.enke.sansara.network.handler.ingame;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import ru.enke.minecraft.protocol.packet.client.game.position.PlayerLook;
 import ru.enke.sansara.Server;
 import ru.enke.sansara.network.handler.MessageHandler;
@@ -9,7 +7,6 @@ import ru.enke.sansara.network.session.Session;
 
 public class PositionLookHandler implements MessageHandler<PlayerLook> {
 
-    private static final Logger logger = LogManager.getLogger();
     private final Server server;
 
     public PositionLookHandler(final Server server) {

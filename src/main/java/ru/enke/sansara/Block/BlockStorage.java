@@ -1,13 +1,11 @@
 package ru.enke.sansara.Block;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import org.pmw.tinylog.Logger;
 
 import java.util.HashMap;
 
 public class BlockStorage {
-    private static final Logger logger = LogManager.getLogger();
     private final HashMap<Integer, Block> blockStorage = new HashMap<>();
 
     public BlockStorage() {
@@ -21,7 +19,7 @@ public class BlockStorage {
     }
 
     private void registerBlock(int id, Block block) {
-        logger.info("registering block (" + block.getName() + "[id=" + id + "])");
+        Logger.info("registering block (" + block.getName() + "[id=" + id + "])");
         blockStorage.put(id, block);
     }
 }

@@ -1,14 +1,15 @@
 package ru.enke.sansara;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
+import org.pmw.tinylog.Configurator;
+import org.pmw.tinylog.Logger;
 import ru.enke.minecraft.protocol.packet.PacketMessage;
 import ru.enke.minecraft.protocol.packet.data.game.Position;
 import ru.enke.minecraft.protocol.packet.data.message.Message;
 import ru.enke.minecraft.protocol.packet.data.message.MessageType;
 import ru.enke.minecraft.protocol.packet.server.game.ServerChat;
 import ru.enke.sansara.Command.CommandRegistry;
+import ru.enke.sansara.WorldGen.FlatWorldGenerator;
 import ru.enke.sansara.network.NetworkServer;
 import ru.enke.sansara.network.session.Session;
 import ru.enke.sansara.network.session.SessionRegistry;
@@ -28,10 +29,10 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 public class Server extends PlayerRegistry implements Runnable {
 
     public static final String GAME_VERSION = "1.12.2";
-    private static final Logger logger = LogManager.getLogger();
     private static final SessionRegistry sessionRegistry = new SessionRegistry();
     private static CommandRegistry commandRegistry;
     private static NetworkServer networkServer;
+    private static boolean DEBUG = true;
     private final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(r -> new Thread(r, "Game Thread"));
     private final Map<String, World> worlds;
     private final boolean onlineMode;
@@ -40,10 +41,12 @@ public class Server extends PlayerRegistry implements Runnable {
     private Server(final String favicon, final boolean onlineMode) {
         this.favicon = favicon;
         this.onlineMode = onlineMode;
-        this.worlds = Collections.singletonMap("world", new World("world", 0, 0));
+        this.worlds = Collections.singletonMap("world", new World("world", 0, 0, new FlatWorldGenerator()));
     }
 
     public static void main(final String[] args) throws IOException {
+        Configurator.currentConfig().formatPattern("[{level} {date:HH:mm:ss}] {message}").activate();
+
         final String favicon = readServerIcon();
         final boolean onlineMode = false;
         final Server server = new Server(favicon, onlineMode);
@@ -64,6 +67,10 @@ public class Server extends PlayerRegistry implements Runnable {
         return "data:image/png;base64," + Base64.getEncoder().encodeToString(bytes);
     }
 
+    public static boolean debug() {
+        return DEBUG;
+    }
+
     public CommandRegistry getCClass() {
         return commandRegistry;
     }
@@ -72,9 +79,9 @@ public class Server extends PlayerRegistry implements Runnable {
         final int port = 25565;
 
         if (networkServer.bind(port)) {
-            logger.info("Successfully bind server on port {}", port);
+            Logger.info("Successfully bind server on port {}", port);
         } else {
-            logger.warn("Failed bind server on port {}", port);
+            Logger.warn("Failed bind server on port {}", port);
             return;
         }
 

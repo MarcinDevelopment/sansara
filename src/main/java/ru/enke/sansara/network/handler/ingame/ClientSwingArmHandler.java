@@ -1,7 +1,6 @@
 package ru.enke.sansara.network.handler.ingame;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.pmw.tinylog.Logger;
 import ru.enke.minecraft.protocol.packet.client.game.SwingArm;
 import ru.enke.minecraft.protocol.packet.data.game.AnimationType;
 import ru.enke.minecraft.protocol.packet.server.game.Animation;
@@ -12,7 +11,6 @@ import ru.enke.sansara.player.Player;
 
 public class ClientSwingArmHandler implements MessageHandler<SwingArm> {
 
-    private static final Logger logger = LogManager.getLogger();
     private final Server server;
 
     public ClientSwingArmHandler(final Server server) {
@@ -25,7 +23,7 @@ public class ClientSwingArmHandler implements MessageHandler<SwingArm> {
             return;
         }
         Player p = session.getPlayer();
-        logger.info(msg);
+        Logger.info(msg);
         server.sendPacketToNearbyPlayers(p, new Animation(p.getId(), AnimationType.SWING_ARM), true);
     }
 }

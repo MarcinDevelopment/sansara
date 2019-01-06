@@ -1,7 +1,6 @@
 package ru.enke.sansara.network.handler.ingame;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.pmw.tinylog.Logger;
 import ru.enke.minecraft.protocol.packet.client.game.ClientStatus;
 import ru.enke.minecraft.protocol.packet.data.game.Difficulty;
 import ru.enke.minecraft.protocol.packet.data.game.Position;
@@ -15,7 +14,6 @@ import ru.enke.sansara.player.Player;
 
 public class ClientStatusHandler implements MessageHandler<ClientStatus> {
 
-    private static final Logger logger = LogManager.getLogger();
     //private final Server server;
 
     /*public ClientStatusHandler(final Server server) {
@@ -24,7 +22,7 @@ public class ClientStatusHandler implements MessageHandler<ClientStatus> {
 
     @Override
     public void handle(Session session, ClientStatus msg) {
-        logger.debug(msg);
+        Logger.debug(msg);
         if (session.getPlayer() == null) {
             return;
         }

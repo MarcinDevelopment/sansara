@@ -67,7 +67,7 @@ public class NetworkServer {
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childHandler(new ChannelInitializer() {
                     @Override
-                    protected void initChannel(final Channel channel) throws Exception {
+                    protected void initChannel(final Channel channel) {
                         final ChannelPipeline pipeline = channel.pipeline();
 
                         pipeline.addLast(Session.LENGTH_CODEC_NAME, new LengthCodec());

@@ -1,7 +1,6 @@
 package ru.enke.sansara.network.handler.ingame;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.pmw.tinylog.Logger;
 import ru.enke.minecraft.protocol.packet.client.game.block.BlockDigging;
 import ru.enke.minecraft.protocol.packet.data.game.BlockState;
 import ru.enke.minecraft.protocol.packet.server.game.block.BlockBreakAnimation;
@@ -14,7 +13,6 @@ import ru.enke.sansara.player.Player;
 
 public class PlayerBlockDiggingHandler implements MessageHandler<BlockDigging> {
 
-    private static final Logger logger = LogManager.getLogger();
     private final Server server;
     private int eId;
 
@@ -28,7 +26,7 @@ public class PlayerBlockDiggingHandler implements MessageHandler<BlockDigging> {
             return;
         }
         Player p = session.getPlayer();
-        logger.info(msg);
+        Logger.info(msg);
         /*int x = msg.getPosition().getX();
         int y = msg.getPosition().getY();
         int z = msg.getPosition().getZ();*/

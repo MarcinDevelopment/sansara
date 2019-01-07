@@ -34,6 +34,6 @@ public class stopCommand implements RawCommand {
         for (Player p : server.getPlayers()) {
             p.kick(reason.toString());
         }
-        server.stop();
+        server.stop(true);
     }
 }

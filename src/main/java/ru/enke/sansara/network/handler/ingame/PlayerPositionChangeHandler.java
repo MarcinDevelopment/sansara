@@ -4,7 +4,6 @@ import ru.enke.minecraft.protocol.packet.client.game.position.PlayerPosition;
 import ru.enke.minecraft.protocol.packet.data.game.Position;
 import ru.enke.minecraft.protocol.packet.data.message.Message;
 import ru.enke.minecraft.protocol.packet.data.message.MessageColor;
-import ru.enke.minecraft.protocol.packet.server.game.entity.UpdateHealth;
 import ru.enke.sansara.Server;
 import ru.enke.sansara.network.handler.MessageHandler;
 import ru.enke.sansara.network.session.Session;
@@ -27,8 +26,10 @@ public class PlayerPositionChangeHandler implements MessageHandler<PlayerPositio
         Player p = session.getPlayer();
         p.setLocation(new Position((int) msg.getX(), (int) msg.getY(), (int) msg.getZ()));
         if (msg.getY() <= -20) {
-            server.broadcast(new Message(p.getProfile().getName() + " fell out of the world", MessageColor.GRAY)); //TODO: Call it once
-            p.sendPacket(new UpdateHealth(0.0F, 0, 0.0F)); //KILL! (0x41)
+            if (!p.isDead()) {
+                server.broadcast(new Message(p.getProfile().getName() + " fell out of the world", MessageColor.GRAY));
+                p.setHealth(0.0F);
+            }
         }
     }
 }

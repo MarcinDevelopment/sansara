@@ -25,8 +25,8 @@ public class PlayerInteractEntityHandler implements MessageHandler<InteractEntit
         Player p = session.getPlayer();
         switch (msg.getType()) {
             case ATTACK:
+                Logger.info("entity hurt: {}", p.getWorld().getEntityBySpawnId(msg.getEntityId()).toString());
                 server.sendPacketToNearbyPlayers(p, new Animation(msg.getEntityId(), AnimationType.DAMAGE), false);
-                Logger.debug("entity hurt: " + p.getWorld().getEntityBySpawnId(msg.getEntityId()).toString());
                 break;
             case INTERACT:
                 //TODO: idk. Too much to do to think about it

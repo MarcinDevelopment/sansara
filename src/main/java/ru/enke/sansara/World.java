@@ -10,6 +10,7 @@ import ru.enke.minecraft.protocol.packet.server.game.block.BlockChange;
 import ru.enke.minecraft.protocol.packet.server.game.chunk.ChunkData;
 import ru.enke.sansara.Entity.Entity;
 import ru.enke.sansara.Entity.EntityType;
+import ru.enke.sansara.Utils.Dimension;
 import ru.enke.sansara.WorldGen.Chunk.Chunk;
 import ru.enke.sansara.WorldGen.Chunk.ChunkCoordinates;
 import ru.enke.sansara.WorldGen.WorldGenerator;
@@ -17,8 +18,7 @@ import ru.enke.sansara.player.Player;
 import ru.enke.sansara.player.PlayerRegistry;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class World extends PlayerRegistry implements Runnable {
 
@@ -28,15 +28,17 @@ public class World extends PlayerRegistry implements Runnable {
     private final int SPAWN_SIZE = 1;
     private long age;
     private long time;
-    private HashMap<Integer, Entity> worldEntities = new HashMap<>();
-    private Map<ChunkCoordinates, Chunk> worldChunks = new HashMap<>();
+    private ConcurrentHashMap<Integer, Entity> worldEntities = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<ChunkCoordinates, Chunk> worldChunks = new ConcurrentHashMap<>();
     private boolean storm;
     private WorldGenerator generator;
+    private int dimension;
 
-    World(final String name, final long time, final long age, WorldGenerator worldGenerator) {
+    World(final String name, final long time, final long age, WorldGenerator worldGenerator, Dimension dimension) {
         this.name = name;
         this.age = age;
         this.time = time;
+        this.dimension = dimension.getId();
         this.generator = worldGenerator;
         generateLevel();
     }
@@ -77,6 +79,7 @@ public class World extends PlayerRegistry implements Runnable {
         if (age % TIME_UPDATE_INTERVAL == 0) {
             for (final Player player : getPlayers()) {
                 player.sendPacket(new TimeUpdate(age, time));
+                player.tick();
             }
         }
     }
@@ -131,5 +134,13 @@ public class World extends PlayerRegistry implements Runnable {
 
     public void setStorm(boolean storm) {
         this.storm = storm;
+    }
+
+    public int getDimension() {
+        return dimension;
+    }
+
+    public void setDimension(int dimension) {
+        this.dimension = dimension;
     }
 }

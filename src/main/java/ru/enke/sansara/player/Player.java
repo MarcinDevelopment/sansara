@@ -3,10 +3,14 @@ package ru.enke.sansara.player;
 import ru.enke.minecraft.protocol.packet.PacketMessage;
 import ru.enke.minecraft.protocol.packet.data.game.GameMode;
 import ru.enke.minecraft.protocol.packet.data.game.Position;
+import ru.enke.minecraft.protocol.packet.data.game.Slot;
 import ru.enke.minecraft.protocol.packet.data.message.Message;
 import ru.enke.minecraft.protocol.packet.data.message.MessageType;
 import ru.enke.minecraft.protocol.packet.server.game.Disconnect;
 import ru.enke.minecraft.protocol.packet.server.game.ServerChat;
+import ru.enke.minecraft.protocol.packet.server.game.ServerItemHeldChange;
+import ru.enke.minecraft.protocol.packet.server.game.entity.UpdateHealth;
+import ru.enke.minecraft.protocol.packet.server.game.inventory.InventorySetSlot;
 import ru.enke.sansara.World;
 import ru.enke.sansara.login.LoginProfile;
 import ru.enke.sansara.network.session.Session;
@@ -26,12 +30,22 @@ public class Player {
     private boolean operator;
     private float experienceBar = 0.0F;
     private int experienceLevel = 0;
+    private boolean dead;
+    private float health = 20.0F;
+    private int foodLevel = 10;
+    private float saturation = 5.0F;
 
     public Player(final int id, final Session session, final World world, final LoginProfile profile) {
         this.id = id;
         this.session = session;
         this.world = world;
         this.profile = profile;
+    }
+
+    public void tick() {
+        if (isDead()) {
+            sendPacket(new UpdateHealth(0.0F, getFoodLevel(), getSaturation()));
+        }
     }
 
     public int getId() {
@@ -126,4 +140,47 @@ public class Player {
         this.experienceLevel += experienceLevel;
     }
 
+    public boolean isDead() {
+        return dead;
+    }
+
+    public void setDead(boolean dead) {
+        this.dead = dead;
+    }
+
+    public float getHealth() {
+        return health;
+    }
+
+    public void setHealth(float health) {
+        if (health <= 0.0F) {
+            setDead(true);
+        }
+        this.health = health;
+    }
+
+    public int getFoodLevel() {
+        return foodLevel;
+    }
+
+    public void setFoodLevel(int foodLevel) {
+        this.foodLevel = foodLevel;
+    }
+
+    public float getSaturation() {
+        return saturation;
+    }
+
+    public void setSaturation(float saturation) {
+        this.saturation = saturation;
+    }
+
+    /* TODO: MOVE THIS TO inventory class */
+    public void setHeldItemSlot(int slot) {
+        sendPacket(new ServerItemHeldChange(slot));
+    }
+
+    public void setItem(int slotIndex, int window, int materialid, int quantity) {
+        sendPacket(new InventorySetSlot(window, slotIndex, new Slot(materialid, quantity, 0, new byte[]{0})));
+    }
 }

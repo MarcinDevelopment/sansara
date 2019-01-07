@@ -106,14 +106,13 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
         final World world = server.getWorlds().iterator().next();
         world.setStorm(false); //TEMP
 
-        player = new Player(server.generateRandomEID(), this, world, profile);
+        player = new Player(server.generateEID(), this, world, profile);
 
         player.setOperator(true); //TEMP
-
         server.addPlayer(player);
         player.setGameMode(GameMode.SURVIVAL);
 
-        sendPacket(new JoinGame(player.getId(), player.getGameMode(), 0, Difficulty.NORMAL, 100, WorldType.DEFAULT, true));
+        sendPacket(new JoinGame(player.getId(), player.getGameMode(), world.getDimension(), Difficulty.NORMAL, 100, WorldType.DEFAULT, true));
         sendPacket(new ServerPlayerAbilities(false, false, true, true, 0.05F, 0.1F));
 
         world.addPlayer(player);
@@ -125,14 +124,16 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
         // Testing
         //server.sendGlobalPacket(new SpawnExpOrb(0, 8, 125, 8, 8));
         //server.sendGlobalPacket(new SpawnGlobalEntity(1, 1, 125, 8, 1)); //lighting strike
-        server.sendGlobalPacket(new SpawnMob(99, UUID.randomUUID(),
+        int eid = server.generateEID();
+        server.sendGlobalPacket(new SpawnMob(eid, UUID.randomUUID(),
                 EntityType.ZOMBIE.getId(), world.getSpawnPosition().getX(), world.getSpawnPosition().getY(), world.getSpawnPosition().getZ(),
                 0, 0, 0, 0, 0, 0, Collections.emptyList()));
 
-        world.addEntity(99, EntityType.ZOMBIE, world.getSpawnPosition());
+        world.addEntity(eid, EntityType.ZOMBIE, world.getSpawnPosition());
         //Another test
         player.sendPacket(new PlayerListData(new Message("Hello, " + profile.getName(), MessageColor.GOLD), new Message("0x4A packet test")));
         //TODO: create 0x2E packet
+        player.setItem(36, 0, 20, 64);
     }
 
     private void setCompression(final int threshold) {
@@ -157,4 +158,9 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
         return player;
     }
 
+    @Override
+    public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
+        Logger.warn("Closed connection: {} [{}]", cause.getLocalizedMessage(), getAddress());
+        context.close();
+    }
 }

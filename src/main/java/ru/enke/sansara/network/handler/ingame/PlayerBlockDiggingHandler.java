@@ -27,9 +27,9 @@ public class PlayerBlockDiggingHandler implements MessageHandler<BlockDigging> {
         }
         Player p = session.getPlayer();
         Logger.info(msg);
-        /*int x = msg.getPosition().getX();
+        int x = msg.getPosition().getX();
         int y = msg.getPosition().getY();
-        int z = msg.getPosition().getZ();*/
+        int z = msg.getPosition().getZ();
 
         /* TODO send more packets */
         switch (msg.getAction()) {
@@ -37,7 +37,7 @@ public class PlayerBlockDiggingHandler implements MessageHandler<BlockDigging> {
                 //TODO: drop item
                 break;
             case START_DIGGING:
-                this.eId = server.generateRandomEID();
+                this.eId = server.generateEID();
                 server.sendPacketToNearbyPlayers(p, new BlockBreakAnimation(eId, msg.getPosition(), 5 /* TODO use correct values  */), false);
                 break;
             case CANCEL_DIGGING:
@@ -49,6 +49,7 @@ public class PlayerBlockDiggingHandler implements MessageHandler<BlockDigging> {
                 //TODO: drop item
 
                 /* TESTING 0x40 packet */
+                //server.sendGlobalPacket(new SpawnExpOrb(server.generateEID(), x, y, z, 8));
                 p.addToExperienceBar(0.05F);
                 if (p.getExperienceBar() > 1.0F) {
                     p.setExperienceBar(0.0F);

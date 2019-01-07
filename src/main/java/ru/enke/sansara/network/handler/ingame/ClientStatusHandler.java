@@ -30,7 +30,8 @@ public class ClientStatusHandler implements MessageHandler<ClientStatus> {
         Position spawnPos = p.getWorld().getSpawnPosition();
         switch (msg.getStatus()) {
             case RESPAWN:
-                p.sendPacket(new Respawn(0, Difficulty.NORMAL, p.getGameMode(), WorldType.DEFAULT));
+                p.sendPacket(new Respawn(p.getWorld().getDimension(), Difficulty.NORMAL, p.getGameMode(), WorldType.DEFAULT));
+                p.setDead(false);
                 p.sendPacket(new SpawnPosition(spawnPos));
                 p.sendPacket(new ServerPlayerPositionLook(spawnPos.getX(), spawnPos.getY(), spawnPos.getZ(), 0, 0, 0, 1));
                 break;

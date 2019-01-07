@@ -23,7 +23,7 @@ public class LoginStartHandler implements MessageHandler<LoginStart> {
         if (server.isOnlineMode()) {
             // TODO: Add online login.
         } else {
-            session.joinGame(new LoginProfile(UUID.randomUUID(), loginStart.getUsername()));
+            session.joinGame(new LoginProfile(UUID.nameUUIDFromBytes(loginStart.getUsername().getBytes()), loginStart.getUsername()));
             server.broadcast(new Message(loginStart.getUsername() + " joined server", MessageColor.YELLOW));
         }
     }

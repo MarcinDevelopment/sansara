@@ -39,7 +39,7 @@ public class PlayerChatHandler implements MessageHandler<ClientChat> {
             return;
         }
 
-        server.sendGlobalPacket(new ServerChat(new Message(ChatColor.GRAY + p.getProfile().getName() + ": " + ChatColor.WHITE + message), MessageType.CHAT));
+        server.sendGlobalPacket(new ServerChat(new Message(ChatColor.GRAY + p.getName() + ": " + ChatColor.WHITE + message), MessageType.CHAT));
     }
 
     private void executeCommand() {

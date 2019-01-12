@@ -25,9 +25,10 @@ public class PlayerPositionChangeHandler implements MessageHandler<PlayerPositio
         }
         Player p = session.getPlayer();
         p.setLocation(new Position((int) msg.getX(), (int) msg.getY(), (int) msg.getZ()));
+        p.setOnGround(msg.getGround());
         if (msg.getY() <= -20) {
             if (!p.isDead()) {
-                server.broadcast(new Message(p.getProfile().getName() + " fell out of the world", MessageColor.GRAY));
+                server.broadcast(new Message(p.getName() + " fell out of the world", MessageColor.GRAY));
                 p.setHealth(0.0F);
             }
         }

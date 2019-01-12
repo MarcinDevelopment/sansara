@@ -23,7 +23,7 @@ public class PlayerGroundHandler implements MessageHandler<PlayerGround> {
             return;
         }
         Player p = session.getPlayer();
-        Logger.info(p.getProfile().getName() + " | " + msg);
+        Logger.info(p.getName() + " | " + msg);
         server.broadcast(new Message(ChatColor.RED + "ON GROUND : " + msg.getGround()));
 
         //TODO: Fall damage

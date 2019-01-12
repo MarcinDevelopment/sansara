@@ -29,7 +29,7 @@ public class PlayerTabCompleteRequestHandler implements MessageHandler<TabComple
         List<String> strList = new ArrayList<>();
 
         for (Player p : server.getPlayers()) {
-            strList.add(p.getProfile().getName());
+            strList.add(p.getName());
         }
         /* ----------------------------------------------------------------- */
         Collections.sort(strList);

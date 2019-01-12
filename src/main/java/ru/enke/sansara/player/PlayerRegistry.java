@@ -21,11 +21,11 @@ public class PlayerRegistry {
     }
 
     public void addPlayer(final Player player) {
-        players.put(player.getProfile().getName(), player);
+        players.put(player.getName(), player);
     }
 
     public void removePlayer(final Player player) {
-        players.remove(player.getProfile().getName(), player);
+        players.remove(player.getName(), player);
     }
 
 }

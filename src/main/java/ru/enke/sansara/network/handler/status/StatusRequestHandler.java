@@ -22,7 +22,7 @@ public class StatusRequestHandler implements MessageHandler<StatusRequest> {
 
     @Override
     public void handle(final Session session, final StatusRequest statusRequest) {
-        final Version version = new Version(Server.GAME_VERSION, Protocol.VERSION);
+        final Version version = new Version(Protocol.VERSION_NAME, Protocol.VERSION);
 
         final Players players = new Players(server.getPlayers().size(), 20);
         final Message description = new Message("Sansara server", MessageColor.YELLOW);

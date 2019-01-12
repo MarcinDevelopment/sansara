@@ -17,7 +17,7 @@ public class playersCommand implements RawCommand {
     public void execute(Player sender, String[] args) {
         StringBuilder sb = new StringBuilder();
         for (Player p : server.getPlayers()) {
-            sb.append(p.getProfile().getName()).append(", ");
+            sb.append(p.getName()).append(", ");
         }
         sender.sendMessage(new Message(ChatColor.GOLD + "Online players [" + server.getPlayers().size() + "]: " + ChatColor.GRAY + sb.toString()));
     }

@@ -33,7 +33,6 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class Server extends PlayerRegistry implements Runnable {
 
-    public static final String GAME_VERSION = "1.12.2";
     private static final SessionRegistry sessionRegistry = new SessionRegistry();
     private static CommandRegistry commandRegistry;
     private static NetworkServer networkServer;
@@ -52,7 +51,7 @@ public class Server extends PlayerRegistry implements Runnable {
 
     public static void main(final String[] args) throws IOException {
         Configurator.currentConfig().formatPattern("[{level} {date:HH:mm:ss}] {message}").activate();
-        Logger.info("Starting server | version {} ({})", GAME_VERSION, Protocol.VERSION);
+        Logger.info("Starting server | version {} ({})", Protocol.VERSION_NAME, Protocol.VERSION);
         final String favicon = readServerIcon();
         final boolean onlineMode = false;
         final Server server = new Server(favicon, onlineMode);

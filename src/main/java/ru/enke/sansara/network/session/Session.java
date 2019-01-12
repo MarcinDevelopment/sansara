@@ -9,6 +9,7 @@ import ru.enke.minecraft.protocol.codec.CompressionCodec;
 import ru.enke.minecraft.protocol.packet.PacketMessage;
 import ru.enke.minecraft.protocol.packet.data.game.Difficulty;
 import ru.enke.minecraft.protocol.packet.data.game.GameMode;
+import ru.enke.minecraft.protocol.packet.data.game.ItemStack;
 import ru.enke.minecraft.protocol.packet.data.game.WorldType;
 import ru.enke.minecraft.protocol.packet.data.message.Message;
 import ru.enke.minecraft.protocol.packet.data.message.MessageColor;
@@ -100,7 +101,7 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
 
     public void joinGame(final LoginProfile profile) {
         // Finalize login.
-        setCompression(CompressionCodec.DEFAULT_COMPRESSION_THRESHOLD);
+        setCompression(CompressionCodec.DEFAULT_COMPRESSION_THRESHOLD);///////////////
         sendPacket(new LoginSuccess(profile.getId().toString(), profile.getName()));
 
         final World world = server.getWorlds().iterator().next();
@@ -133,7 +134,10 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
         //Another test
         player.sendPacket(new PlayerListData(new Message("Hello, " + profile.getName(), MessageColor.GOLD), new Message("0x4A packet test")));
         //TODO: create 0x2E packet
-        player.setItem(36, 0, 20, 64);
+        player.getInventory().setItem(36, new ItemStack(1, 16, 0, new byte[]{0}));
+        player.getInventory().setItem(37, new ItemStack(1, 16, 1, new byte[]{0}));
+        player.getInventory().setItem(38, new ItemStack(1, 16, 2, new byte[]{0}));
+        player.getInventory().setItem(39, new ItemStack(1, 16, 3, new byte[]{0}));
     }
 
     private void setCompression(final int threshold) {
@@ -161,6 +165,9 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) {
         Logger.warn("Closed connection: {} [{}]", cause.getLocalizedMessage(), getAddress());
+        if (getPlayer() != null) {
+            getPlayer().kick(cause.getLocalizedMessage());
+        }
         context.close();
     }
 }

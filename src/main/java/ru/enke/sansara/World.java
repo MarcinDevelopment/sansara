@@ -86,7 +86,7 @@ public class World extends PlayerRegistry implements Runnable {
 
     @Override
     public void addPlayer(final Player player) {
-        players.put(player.getProfile().getName(), player);
+        players.put(player.getName(), player);
         if (isStorm()) {
             player.sendPacket(new ChangeGameState(GameState.BEGIN_RAINING, 0));
         }

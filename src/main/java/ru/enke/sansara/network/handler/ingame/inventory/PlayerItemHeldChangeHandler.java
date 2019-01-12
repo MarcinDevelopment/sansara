@@ -21,6 +21,7 @@ public class PlayerItemHeldChangeHandler implements MessageHandler<ClientItemHel
             return;
         }
         Player p = session.getPlayer();
-        Logger.info(p.getProfile().getName() + " | " + msg);
+        p.getInventory().setCurrentItemSlot(msg.getSlot());
+        Logger.warn(p.getName() + " | " + msg);
     }
 }

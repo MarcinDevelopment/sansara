@@ -68,7 +68,7 @@ public class PlayerBlockPlaceHandler implements MessageHandler<BlockPlace> {
         }
 
         if (p.getGameMode() != GameMode.CREATIVE) {
-            p.getInventory().removeItem(p.getInventory().getItemInHandIndex());
+            p.getInventory().removeItem(p.getInventory().getItemInHandIndex(), 1);
         }
         server.broadcast(new Message("blockid: " + blockId + ":" + blockData + " q: " + p.getInventory().getItemInHand().getQuantity(), MessageColor.GREEN));
         server.sendPacketToNearbyPlayers(p, new BlockChange(new Position(x, y, z), new BlockState(blockId /* item in hand */, blockData)), false);
@@ -76,9 +76,5 @@ public class PlayerBlockPlaceHandler implements MessageHandler<BlockPlace> {
 
     private boolean canPlace() {
         return true; //TODO get loc from chunk
-    }
-
-    private void fixupBlockPlacing(Position pos) {
-
     }
 }

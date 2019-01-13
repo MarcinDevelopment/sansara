@@ -1,6 +1,8 @@
 package ru.enke.sansara.Inventory;
 
 import ru.enke.minecraft.protocol.packet.data.game.ItemStack;
+import ru.enke.minecraft.protocol.packet.data.message.Message;
+import ru.enke.minecraft.protocol.packet.data.message.MessageColor;
 import ru.enke.minecraft.protocol.packet.server.game.ServerItemHeldChange;
 import ru.enke.minecraft.protocol.packet.server.game.inventory.InventorySetSlot;
 import ru.enke.sansara.player.Player;
@@ -45,13 +47,16 @@ public class Inventory {
         return this.pinvStorage[i];
     }
 
-    public void removeItem(int pos) {
+    public void removeItem(int pos, int q) {
         ItemStack it = this.pinvStorage[pos];
+        if (it == null) {
+            return;
+        }
         if (it.getQuantity() <= 0) {
             this.pinvStorage[pos] = AIR;
             return;
         }
-        ItemStack it_f = new ItemStack(it.getId(), (it.getQuantity() - 1), it.getMetadata(), new byte[]{0});
+        ItemStack it_f = new ItemStack(it.getId(), (it.getQuantity() - q), it.getMetadata(), new byte[]{0});
         this.pinvStorage[pos] = it_f;
         p.sendPacket(new InventorySetSlot(DEFAULT_PLAYER_INVENTORY_ID, pos, it_f));
     }
@@ -83,5 +88,21 @@ public class Inventory {
 
     public void setHeldItemSlot(int slot) {
         p.sendPacket(new ServerItemHeldChange(slot));
+    }
+
+    private boolean contains(ItemStack itemStack) {
+        for (ItemStack aPinvStorage : this.pinvStorage) {
+            if (aPinvStorage != null && aPinvStorage == itemStack) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void checkInv() {
+        if (!contains(getItemInHand())) {
+            p.sendPacket(new InventorySetSlot(DEFAULT_PLAYER_INVENTORY_ID, getItemInHandIndex(), AIR));
+            p.sendMessage(new Message("This item doesn't exist in your inventory!", MessageColor.RED));
+        }
     }
 }

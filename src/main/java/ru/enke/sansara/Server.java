@@ -11,7 +11,10 @@ import ru.enke.minecraft.protocol.packet.data.message.MessageType;
 import ru.enke.minecraft.protocol.packet.server.game.ServerChat;
 import ru.enke.sansara.Command.CommandRegistry;
 import ru.enke.sansara.Utils.Dimension;
-import ru.enke.sansara.WorldGen.FlatWorldGenerator;
+import ru.enke.sansara.WorldGen.NormalWorldGenerator;
+import ru.enke.sansara.WorldGen.ObjectPopulator;
+import ru.enke.sansara.WorldGen.coalPopulator;
+import ru.enke.sansara.WorldGen.plantsPopulator;
 import ru.enke.sansara.network.NetworkServer;
 import ru.enke.sansara.network.session.Session;
 import ru.enke.sansara.network.session.SessionRegistry;
@@ -22,10 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -42,11 +42,23 @@ public class Server extends PlayerRegistry implements Runnable {
     private final boolean onlineMode;
     private final String favicon;
     private int i;
+    private List<ObjectPopulator> populators = new ArrayList<>();
 
     private Server(final String favicon, final boolean onlineMode) {
         this.favicon = favicon;
         this.onlineMode = onlineMode;
-        this.worlds = Collections.singletonMap("world", new World("world", 0, 0, new FlatWorldGenerator(), Dimension.OVERWORLD));
+
+        populators.add(new plantsPopulator());
+        populators.add(new coalPopulator());
+
+        this.worlds = Collections.singletonMap("world",
+                new World("world",
+                        0,
+                        0,
+                        new NormalWorldGenerator(),
+                        Dimension.OVERWORLD,
+                        populators
+                ));
     }
 
     public static void main(final String[] args) throws IOException {
@@ -59,13 +71,10 @@ public class Server extends PlayerRegistry implements Runnable {
         commandRegistry.register();
         networkServer = new NetworkServer(server, sessionRegistry);
 
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            @Override
-            public void run() {
-                Logger.info("Stopping server...");
-                server.stop(false);
-            }
-        });
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            Logger.info("Stopping server...");
+            server.stop(false);
+        }));
 
         server.start();
     }

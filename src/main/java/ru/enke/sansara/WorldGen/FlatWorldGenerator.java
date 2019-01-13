@@ -11,19 +11,19 @@ public class FlatWorldGenerator implements WorldGenerator {
 
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
-                for (int y = 0; y < 61; y++) {
-                    int id = 0;
+                for (int y = 60; y < 121; y++) {
+                    int id;
 
-                    if (y == 60) {
+                    if (y == 120) {
                         id = 2;
-                    } else if (y >= 55) {
+                    } else if (y >= 113) {
                         id = 3;
-                    } else if (y == 0) {
+                    } else if (y == 60) {
                         id = 7;
                     } else {
                         id = 1;
                     }
-                    //chunk.setBlockIdAt(x, y, z, id);
+                    chunk.setBlocks(x, y, z, id);
                 }
             }
         }

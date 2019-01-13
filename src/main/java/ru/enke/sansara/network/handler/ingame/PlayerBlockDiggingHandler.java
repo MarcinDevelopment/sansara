@@ -3,6 +3,7 @@ package ru.enke.sansara.network.handler.ingame;
 import org.pmw.tinylog.Logger;
 import ru.enke.minecraft.protocol.packet.client.game.block.BlockDigging;
 import ru.enke.minecraft.protocol.packet.data.game.BlockState;
+import ru.enke.minecraft.protocol.packet.data.game.GameMode;
 import ru.enke.minecraft.protocol.packet.server.game.block.BlockBreakAnimation;
 import ru.enke.minecraft.protocol.packet.server.game.block.BlockChange;
 import ru.enke.minecraft.protocol.packet.server.game.player.setExperience;
@@ -34,17 +35,24 @@ public class PlayerBlockDiggingHandler implements MessageHandler<BlockDigging> {
         /* TODO send more packets */
         switch (msg.getAction()) {
             case DROP_ITEM:
+                p.getInventory().removeItem(p.getInventory().getItemInHandIndex(), 1);
                 //TODO: drop item
                 break;
             case START_DIGGING:
-                this.eId = server.generateEID();
-                server.sendPacketToNearbyPlayers(p, new BlockBreakAnimation(eId, msg.getPosition(), 5 /* TODO use correct values  */), false);
+                if (p.getGameMode() != GameMode.CREATIVE) {
+                    this.eId = server.generateEID();
+                    server.sendPacketToNearbyPlayers(p, new BlockBreakAnimation(eId, msg.getPosition(), 5 /* TODO use correct values  */), false);
+                }
                 break;
             case CANCEL_DIGGING:
-                server.sendPacketToNearbyPlayers(p, new BlockBreakAnimation(eId, msg.getPosition(), -1), false);
+                if (p.getGameMode() != GameMode.CREATIVE) {
+                    server.sendPacketToNearbyPlayers(p, new BlockBreakAnimation(eId, msg.getPosition(), -1), false);
+                }
                 break;
             case FINISH_DIGGING:
-                server.sendPacketToNearbyPlayers(p, new BlockBreakAnimation(eId, msg.getPosition(), -1), false);
+                if (p.getGameMode() != GameMode.CREATIVE) {
+                    server.sendPacketToNearbyPlayers(p, new BlockBreakAnimation(eId, msg.getPosition(), -1), false);
+                }
                 server.sendPacketToNearbyPlayers(p, new BlockChange(msg.getPosition(), new BlockState(0 /* air */, 0)), false);
                 //TODO: drop item
 

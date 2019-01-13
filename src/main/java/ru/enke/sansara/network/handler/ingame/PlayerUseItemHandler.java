@@ -21,6 +21,7 @@ public class PlayerUseItemHandler implements MessageHandler<UseItem> {
         }
         Player p = session.getPlayer();
         Logger.info(msg);
+        p.getInventory().checkInv();
         //server.sendGlobalPacket(new Animation(p.getId(), *); //temp
     }
 }

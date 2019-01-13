@@ -1,23 +1,24 @@
 package ru.enke.sansara;
 
 import org.pmw.tinylog.Logger;
-import ru.enke.minecraft.protocol.packet.data.game.BlockState;
 import ru.enke.minecraft.protocol.packet.data.game.GameState;
 import ru.enke.minecraft.protocol.packet.data.game.Position;
 import ru.enke.minecraft.protocol.packet.server.game.ChangeGameState;
 import ru.enke.minecraft.protocol.packet.server.game.TimeUpdate;
-import ru.enke.minecraft.protocol.packet.server.game.block.BlockChange;
+import ru.enke.minecraft.protocol.packet.server.game.block.MultiBlockChange;
 import ru.enke.minecraft.protocol.packet.server.game.chunk.ChunkData;
 import ru.enke.sansara.Entity.Entity;
 import ru.enke.sansara.Entity.EntityType;
 import ru.enke.sansara.Utils.Dimension;
 import ru.enke.sansara.WorldGen.Chunk.Chunk;
 import ru.enke.sansara.WorldGen.Chunk.ChunkCoordinates;
+import ru.enke.sansara.WorldGen.ObjectPopulator;
 import ru.enke.sansara.WorldGen.WorldGenerator;
 import ru.enke.sansara.player.Player;
 import ru.enke.sansara.player.PlayerRegistry;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class World extends PlayerRegistry implements Runnable {
@@ -30,21 +31,23 @@ public class World extends PlayerRegistry implements Runnable {
     private long time;
     private ConcurrentHashMap<Integer, Entity> worldEntities = new ConcurrentHashMap<>();
     private ConcurrentHashMap<ChunkCoordinates, Chunk> worldChunks = new ConcurrentHashMap<>();
+    private List<ObjectPopulator> populators;
     private boolean storm;
     private WorldGenerator generator;
     private int dimension;
 
-    World(final String name, final long time, final long age, WorldGenerator worldGenerator, Dimension dimension) {
+    World(final String name, final long time, final long age, WorldGenerator worldGenerator, Dimension dimension, List<ObjectPopulator> populators) {
         this.name = name;
         this.age = age;
         this.time = time;
         this.dimension = dimension.getId();
         this.generator = worldGenerator;
+        this.populators = populators;
         generateLevel();
     }
 
     public WorldGenerator getWorldGenerator() {
-        return generator;
+        return this.generator;
     }
 
     private Collection<Chunk> getAllChunks() {
@@ -52,11 +55,14 @@ public class World extends PlayerRegistry implements Runnable {
     }
 
     public Chunk getChunkAt(int x, int z) {
-        return worldChunks.get(new ChunkCoordinates(x, z));
+        return this.worldChunks.get(new ChunkCoordinates(x, z));
     }
 
     private void generateChunk(ChunkCoordinates coordinates) {
-        this.worldChunks.put(coordinates, generator.generate(coordinates.getChunkX(), coordinates.getChunkZ()));
+        this.worldChunks.put(coordinates, this.generator.generate(coordinates.getChunkX(), coordinates.getChunkZ()));
+        for (ObjectPopulator populator : this.populators) {
+            populator.populate(this.worldChunks.get(coordinates));
+        }
     }
 
     private void generateLevel() {
@@ -92,10 +98,10 @@ public class World extends PlayerRegistry implements Runnable {
         }
 
         //TEST
-        for (Chunk chunks : getAllChunks()) {
-            player.sendPacket(new ChunkData(chunks.getX(), chunks.getZ(), true, 0, new byte[256]));
-            //send one block
-            player.sendPacket(new BlockChange(new Position(spawnPosition.getX(), spawnPosition.getY() - 1, spawnPosition.getZ()), new BlockState(2, 0)));
+        for (Chunk chunk : getAllChunks()) {
+            player.sendPacket(new ChunkData(chunk.getX(), chunk.getZ(), true, 0, new byte[256]));
+            player.sendPacket(new MultiBlockChange(chunk.getX(), chunk.getZ(), chunk.getBlocks()));
+            //player.sendPacket(new BlockChange(new Position(spawnPosition.getX(), spawnPosition.getY() - 1, spawnPosition.getZ()), new BlockState(2, 0)));
         }
 
     }

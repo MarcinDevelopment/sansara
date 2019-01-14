@@ -9,6 +9,7 @@ import ru.enke.minecraft.protocol.codec.PacketCodec;
 import ru.enke.minecraft.protocol.packet.client.game.*;
 import ru.enke.minecraft.protocol.packet.client.game.block.BlockDigging;
 import ru.enke.minecraft.protocol.packet.client.game.block.BlockPlace;
+import ru.enke.minecraft.protocol.packet.client.game.inventory.InventoryClick;
 import ru.enke.minecraft.protocol.packet.client.game.position.ClientPlayerPositionLook;
 import ru.enke.minecraft.protocol.packet.client.game.position.PlayerGround;
 import ru.enke.minecraft.protocol.packet.client.game.position.PlayerLook;
@@ -20,6 +21,7 @@ import ru.enke.minecraft.protocol.packet.client.status.StatusRequest;
 import ru.enke.sansara.Server;
 import ru.enke.sansara.network.handler.MessageHandlerRegistry;
 import ru.enke.sansara.network.handler.ingame.*;
+import ru.enke.sansara.network.handler.ingame.inventory.PlayerInventoryClick;
 import ru.enke.sansara.network.handler.ingame.inventory.PlayerItemHeldChangeHandler;
 import ru.enke.sansara.network.handler.login.HandshakeHandler;
 import ru.enke.sansara.network.handler.login.LoginStartHandler;
@@ -61,6 +63,7 @@ public class NetworkServer {
         messageHandlerRegistry.registerHandler(TabCompleteRequest.class, new PlayerTabCompleteRequestHandler(server));
         messageHandlerRegistry.registerHandler(ClientItemHeldChange.class, new PlayerItemHeldChangeHandler(server));
         messageHandlerRegistry.registerHandler(PlayerGround.class, new PlayerGroundHandler(server));
+        messageHandlerRegistry.registerHandler(InventoryClick.class, new PlayerInventoryClick());
     }
 
     public boolean bind(final int port) {

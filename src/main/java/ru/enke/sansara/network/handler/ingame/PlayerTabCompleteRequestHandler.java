@@ -32,7 +32,7 @@ public class PlayerTabCompleteRequestHandler implements MessageHandler<TabComple
             strList.add(p.getName());
         }
         /* ----------------------------------------------------------------- */
-        Collections.sort(strList);
+        strList.sort(String.CASE_INSENSITIVE_ORDER);
         return strList;
     }
 

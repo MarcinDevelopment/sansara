@@ -7,9 +7,10 @@ import ru.enke.minecraft.protocol.packet.data.game.Direction;
 import ru.enke.minecraft.protocol.packet.data.game.GameMode;
 import ru.enke.minecraft.protocol.packet.data.game.Position;
 import ru.enke.minecraft.protocol.packet.data.message.Message;
-import ru.enke.minecraft.protocol.packet.data.message.MessageColor;
 import ru.enke.minecraft.protocol.packet.server.game.block.BlockChange;
+import ru.enke.sansara.Block.Material;
 import ru.enke.sansara.Server;
+import ru.enke.sansara.Utils.ChatColor;
 import ru.enke.sansara.network.handler.MessageHandler;
 import ru.enke.sansara.network.session.Session;
 import ru.enke.sansara.player.Player;
@@ -29,14 +30,12 @@ public class PlayerBlockPlaceHandler implements MessageHandler<BlockPlace> {
             return;
         }
         this.p = session.getPlayer();
-        if (!canPlace()) {
-            return;
-        }
+
         int blockId = p.getInventory().getItemInHand().getId();
         int blockData = p.getInventory().getItemInHand().getMetadata();
         int blockq = p.getInventory().getItemInHand().getQuantity();
         Logger.info(msg);
-        if (blockId == 0 || blockq == 0) {
+        if (blockId == Material.AIR.getId() || blockq == 0) {
             return;
         }
 
@@ -67,14 +66,22 @@ public class PlayerBlockPlaceHandler implements MessageHandler<BlockPlace> {
                 break;
         }
 
+        Material material = Material.fromId(blockId);
+        if (!canPlace(material)) {
+            Logger.error("[{}] there's no material by that id (id={})", p.getName(), blockId + ":" + blockData);
+            server.sendPacketToNearbyPlayers(p, new BlockChange(new Position(x, y, z), new BlockState(Material.AIR.getId(), 0)), false);
+            return;
+        }
+
         if (p.getGameMode() != GameMode.CREATIVE) {
             p.getInventory().removeItem(p.getInventory().getItemInHandIndex(), 1);
         }
-        server.broadcast(new Message("blockid: " + blockId + ":" + blockData + " q: " + p.getInventory().getItemInHand().getQuantity(), MessageColor.GREEN));
+
+        server.broadcast(new Message(ChatColor.GOLD + "Material: " + ChatColor.AQUA + material + ":" + blockData + " q: " + p.getInventory().getItemInHand().getQuantity()));
         server.sendPacketToNearbyPlayers(p, new BlockChange(new Position(x, y, z), new BlockState(blockId /* item in hand */, blockData)), false);
     }
 
-    private boolean canPlace() {
-        return true; //TODO get loc from chunk
+    private boolean canPlace(Material material) {
+        return material != null;
     }
 }

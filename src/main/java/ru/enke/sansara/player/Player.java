@@ -34,6 +34,7 @@ public class Player {
     private float saturation = 5.0F;
     private Inventory inventory;
     private boolean onGround;
+    private boolean flying;
 
     public Player(final int id, final Session session, final World world, final LoginProfile profile) {
         this.id = id;
@@ -191,5 +192,9 @@ public class Player {
 
     public void setOnGround(boolean onGround) {
         this.onGround = onGround;
+    }
+
+    public boolean isFlying() {
+        return !isOnGround();
     }
 }

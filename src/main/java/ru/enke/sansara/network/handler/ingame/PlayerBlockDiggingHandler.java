@@ -7,6 +7,7 @@ import ru.enke.minecraft.protocol.packet.data.game.GameMode;
 import ru.enke.minecraft.protocol.packet.server.game.block.BlockBreakAnimation;
 import ru.enke.minecraft.protocol.packet.server.game.block.BlockChange;
 import ru.enke.minecraft.protocol.packet.server.game.player.setExperience;
+import ru.enke.sansara.Block.Material;
 import ru.enke.sansara.Server;
 import ru.enke.sansara.network.handler.MessageHandler;
 import ru.enke.sansara.network.session.Session;
@@ -53,7 +54,7 @@ public class PlayerBlockDiggingHandler implements MessageHandler<BlockDigging> {
                 if (p.getGameMode() != GameMode.CREATIVE) {
                     server.sendPacketToNearbyPlayers(p, new BlockBreakAnimation(eId, msg.getPosition(), -1), false);
                 }
-                server.sendPacketToNearbyPlayers(p, new BlockChange(msg.getPosition(), new BlockState(0 /* air */, 0)), false);
+                server.sendPacketToNearbyPlayers(p, new BlockChange(msg.getPosition(), new BlockState(Material.AIR.getId() /* air */, 0)), false);
                 //TODO: drop item
 
                 /* TESTING 0x40 packet */

@@ -36,8 +36,8 @@ public class Chunk {
     /* I know... */
     //TODO: Chunk system
     /* everything below is... bad, really bad */
-    public void setBlocks(int x, int y, int z, int id) {
-        tempBlockArr.put(new Position(x, y, z), new BlockChange(new Position(x, y, z), new BlockState(id, 0)));
+    public void setBlockAt(int x, int y, int z, int id, byte data) {
+        tempBlockArr.put(new Position(x, y, z), new BlockChange(new Position(x, y, z), new BlockState(id, data)));
     }
 
     public List<BlockChange> getBlocks() {

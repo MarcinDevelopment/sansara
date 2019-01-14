@@ -1,12 +1,13 @@
 package ru.enke.sansara.WorldGen;
 
+import ru.enke.sansara.Block.Material;
 import ru.enke.sansara.WorldGen.Chunk.Chunk;
 import ru.enke.sansara.WorldGen.Chunk.ChunkCoordinates;
 
 public class FlatWorldGenerator implements WorldGenerator {
 
     @Override
-    public Chunk generate(int chunkX, int chunkZ) {
+    public Chunk generate(int chunkX, int chunkZ, long seed) {
         Chunk chunk = new Chunk(new ChunkCoordinates(chunkX, chunkZ));
 
         for (int x = 0; x < 16; x++) {
@@ -15,15 +16,15 @@ public class FlatWorldGenerator implements WorldGenerator {
                     int id;
 
                     if (y == 120) {
-                        id = 2;
+                        id = Material.GRASS.getId();
                     } else if (y >= 113) {
-                        id = 3;
+                        id = Material.DIRT.getId();
                     } else if (y == 60) {
-                        id = 7;
+                        id = Material.BEDROCK.getId();
                     } else {
-                        id = 1;
+                        id = Material.STONE.getId();
                     }
-                    chunk.setBlocks(x, y, z, id);
+                    chunk.setBlockAt(x, y, z, id, (byte) 0);
                 }
             }
         }

@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class World extends PlayerRegistry implements Runnable {
 
     private static final int TIME_UPDATE_INTERVAL = 20;
-    private final Position spawnPosition = new Position(8, 125, 8);
+    private Position spawnPosition;
     private final String name;
     private final int SPAWN_SIZE = 1;
     private long age;
@@ -35,14 +35,16 @@ public class World extends PlayerRegistry implements Runnable {
     private boolean storm;
     private WorldGenerator generator;
     private int dimension;
+    private long seed;
 
-    World(final String name, final long time, final long age, WorldGenerator worldGenerator, Dimension dimension, List<ObjectPopulator> populators) {
+    World(final String name, final long time, final long age, WorldGenerator worldGenerator, Dimension dimension, List<ObjectPopulator> populators, long seed) {
         this.name = name;
         this.age = age;
         this.time = time;
         this.dimension = dimension.getId();
         this.generator = worldGenerator;
         this.populators = populators;
+        this.seed = seed;
         generateLevel();
     }
 
@@ -55,18 +57,20 @@ public class World extends PlayerRegistry implements Runnable {
     }
 
     public Chunk getChunkAt(int x, int z) {
-        return this.worldChunks.get(new ChunkCoordinates(x, z));
+        return worldChunks.get(new ChunkCoordinates(x, z));
     }
 
     private void generateChunk(ChunkCoordinates coordinates) {
-        this.worldChunks.put(coordinates, this.generator.generate(coordinates.getChunkX(), coordinates.getChunkZ()));
+        this.worldChunks.put(coordinates, this.generator.generate(coordinates.getChunkX(), coordinates.getChunkZ(), seed));
         for (ObjectPopulator populator : this.populators) {
-            populator.populate(this.worldChunks.get(coordinates));
+            populator.populate(this.worldChunks.get(coordinates), seed);
         }
     }
 
     private void generateLevel() {
         Logger.info("Preparing world of size '" + (SPAWN_SIZE * SPAWN_SIZE) + "' ...");
+        Logger.info("Seed: " + getSeed()); //-2479449874556904399 <3
+        setSpawnPosition(new Position(0, 120, 0));
         long start = System.nanoTime();
         for (int x = 0; x < SPAWN_SIZE; x++) {
             for (int z = 0; z < SPAWN_SIZE; z++) {
@@ -99,11 +103,17 @@ public class World extends PlayerRegistry implements Runnable {
 
         //TEST
         for (Chunk chunk : getAllChunks()) {
+
             player.sendPacket(new ChunkData(chunk.getX(), chunk.getZ(), true, 0, new byte[256]));
+            //TODO: update 'minecraft-protocol' lib to fix 'modern' chunk sending
             player.sendPacket(new MultiBlockChange(chunk.getX(), chunk.getZ(), chunk.getBlocks()));
             //player.sendPacket(new BlockChange(new Position(spawnPosition.getX(), spawnPosition.getY() - 1, spawnPosition.getZ()), new BlockState(2, 0)));
         }
 
+    }
+
+    public Position getSpawnPosition() {
+        return spawnPosition;
     }
 
     public String getName() {
@@ -122,9 +132,9 @@ public class World extends PlayerRegistry implements Runnable {
         return age;
     }
 
-    public Position getSpawnPosition() {
+    /*public Position getSpawnPosition() {
         return spawnPosition;
-    }
+    }*/
 
     public void addEntity(int entitySpawnId, EntityType entity, Position entityspawnLocation) {
         worldEntities.put(entitySpawnId, new Entity(entity, entityspawnLocation));
@@ -149,4 +159,25 @@ public class World extends PlayerRegistry implements Runnable {
     public void setDimension(int dimension) {
         this.dimension = dimension;
     }
+
+    public void setSpawnPosition(Position spawnPosition) {
+        this.spawnPosition = spawnPosition;
+    }
+
+    public long getSeed() {
+        return seed;
+    }
+
+    public void strikeLightingAt(Position pos) {
+
+    }
+
+    public Position getHighestBlockAt(int x, int z) {
+        /*TODO:
+         * get chunk at x z (chunk x/z * 16 + x/z)
+         * get highest block using seed from world gen.
+         */
+        return null;
+    }
+
 }

@@ -11,10 +11,7 @@ import ru.enke.minecraft.protocol.packet.data.message.MessageType;
 import ru.enke.minecraft.protocol.packet.server.game.ServerChat;
 import ru.enke.sansara.Command.CommandRegistry;
 import ru.enke.sansara.Utils.Dimension;
-import ru.enke.sansara.WorldGen.NormalWorldGenerator;
-import ru.enke.sansara.WorldGen.ObjectPopulator;
-import ru.enke.sansara.WorldGen.coalPopulator;
-import ru.enke.sansara.WorldGen.plantsPopulator;
+import ru.enke.sansara.WorldGen.*;
 import ru.enke.sansara.network.NetworkServer;
 import ru.enke.sansara.network.session.Session;
 import ru.enke.sansara.network.session.SessionRegistry;
@@ -43,13 +40,17 @@ public class Server extends PlayerRegistry implements Runnable {
     private final String favicon;
     private int i;
     private List<ObjectPopulator> populators = new ArrayList<>();
+    private long seed;
 
     private Server(final String favicon, final boolean onlineMode) {
         this.favicon = favicon;
         this.onlineMode = onlineMode;
+        Random r = new Random();
+        this.seed = r.nextLong();
 
         populators.add(new plantsPopulator());
         populators.add(new coalPopulator());
+        populators.add(new treePopulator());
 
         this.worlds = Collections.singletonMap("world",
                 new World("world",
@@ -57,7 +58,8 @@ public class Server extends PlayerRegistry implements Runnable {
                         0,
                         new NormalWorldGenerator(),
                         Dimension.OVERWORLD,
-                        populators
+                        populators,
+                        seed
                 ));
     }
 
@@ -104,8 +106,8 @@ public class Server extends PlayerRegistry implements Runnable {
         if (networkServer.bind(port)) {
             Logger.info("Successfully bind server on port {}", port);
         } else {
-            Logger.warn("Failed bind server on port {}", port);
-            return;
+            stop(true);
+            throw new RuntimeException("Failed to bind server on port " + port);
         }
 
         executor.scheduleAtFixedRate(this, 0, 50, MILLISECONDS);

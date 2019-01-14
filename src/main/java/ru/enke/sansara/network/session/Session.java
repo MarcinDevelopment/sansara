@@ -7,6 +7,9 @@ import org.jetbrains.annotations.Nullable;
 import org.pmw.tinylog.Logger;
 import ru.enke.minecraft.protocol.codec.CompressionCodec;
 import ru.enke.minecraft.protocol.packet.PacketMessage;
+import ru.enke.minecraft.protocol.packet.client.game.position.ClientPlayerPositionLook;
+import ru.enke.minecraft.protocol.packet.client.game.position.PlayerPosition;
+import ru.enke.minecraft.protocol.packet.client.status.PingRequest;
 import ru.enke.minecraft.protocol.packet.data.game.Difficulty;
 import ru.enke.minecraft.protocol.packet.data.game.GameMode;
 import ru.enke.minecraft.protocol.packet.data.game.ItemStack;
@@ -16,11 +19,14 @@ import ru.enke.minecraft.protocol.packet.data.message.MessageColor;
 import ru.enke.minecraft.protocol.packet.server.game.JoinGame;
 import ru.enke.minecraft.protocol.packet.server.game.PlayerListData;
 import ru.enke.minecraft.protocol.packet.server.game.SpawnPosition;
+import ru.enke.minecraft.protocol.packet.server.game.TimeUpdate;
 import ru.enke.minecraft.protocol.packet.server.game.entity.SpawnMob;
 import ru.enke.minecraft.protocol.packet.server.game.player.ServerPlayerAbilities;
 import ru.enke.minecraft.protocol.packet.server.game.player.ServerPlayerPositionLook;
 import ru.enke.minecraft.protocol.packet.server.login.LoginSetCompression;
 import ru.enke.minecraft.protocol.packet.server.login.LoginSuccess;
+import ru.enke.minecraft.protocol.packet.server.status.PingResponse;
+import ru.enke.sansara.Block.Material;
 import ru.enke.sansara.Entity.EntityType;
 import ru.enke.sansara.Server;
 import ru.enke.sansara.World;
@@ -78,7 +84,11 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final PacketMessage msg) {
         if (Server.debug()) {
-            Logger.info("Received packet {}", msg);
+            if (!(msg instanceof TimeUpdate)
+                    && !(msg instanceof PingResponse)
+                    && !(msg instanceof PlayerPosition)
+                    && !(msg instanceof ClientPlayerPositionLook))
+                Logger.info("Received packet {}", msg);
         }
 
         messageQueue.add(msg);
@@ -101,7 +111,7 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
 
     public void joinGame(final LoginProfile profile) {
         // Finalize login.
-        setCompression(CompressionCodec.DEFAULT_COMPRESSION_THRESHOLD);///////////////
+        setCompression(CompressionCodec.DEFAULT_COMPRESSION_THRESHOLD);
         sendPacket(new LoginSuccess(profile.getId().toString(), profile.getName()));
 
         final World world = server.getWorlds().iterator().next();
@@ -134,12 +144,13 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
         //Another test
         player.sendPacket(new PlayerListData(new Message("Hello, " + profile.getName(), MessageColor.GOLD), new Message("0x4A packet test")));
         //TODO: create 0x2E packet
-        player.getInventory().setItem(36, new ItemStack(35, 16, 0, new byte[]{0}));
-        player.getInventory().setItem(37, new ItemStack(35, 16, 1, new byte[]{0}));
-        player.getInventory().setItem(38, new ItemStack(35, 16, 2, new byte[]{0}));
-        player.getInventory().setItem(39, new ItemStack(35, 16, 3, new byte[]{0}));
-        player.getInventory().setItem(40, new ItemStack(35, 16, 4, new byte[]{0}));
-        player.getInventory().setItem(41, new ItemStack(35, 16, 5, new byte[]{0}));
+        player.getInventory().setItem(36, new ItemStack(Material.WOOL.getId(), 16, 0, new byte[]{0}));
+        player.getInventory().setItem(37, new ItemStack(Material.WOOL.getId(), 16, 1, new byte[]{0}));
+        player.getInventory().setItem(38, new ItemStack(Material.WOOL.getId(), 16, 2, new byte[]{0}));
+        player.getInventory().setItem(39, new ItemStack(Material.WOOL.getId(), 16, 3, new byte[]{0}));
+        player.getInventory().setItem(40, new ItemStack(Material.WOOL.getId(), 16, 4, new byte[]{0}));
+        player.getInventory().setItem(41, new ItemStack(Material.WOOL.getId(), 16, 5, new byte[]{0}));
+        player.getInventory().setItem(42, new ItemStack(159, 16, 4, new byte[]{0}));
     }
 
     private void setCompression(final int threshold) {
@@ -150,7 +161,9 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
 
     public void sendPacket(final PacketMessage msg) {
         if (Server.debug()) {
-            Logger.info("Sending packet {}", msg);
+            if (!(msg instanceof TimeUpdate)
+                    && !(msg instanceof PingRequest))
+                Logger.info("Sending packet {}", msg);
         }
         channel.writeAndFlush(msg);
     }

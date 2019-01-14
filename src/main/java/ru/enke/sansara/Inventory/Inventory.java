@@ -5,6 +5,7 @@ import ru.enke.minecraft.protocol.packet.data.message.Message;
 import ru.enke.minecraft.protocol.packet.data.message.MessageColor;
 import ru.enke.minecraft.protocol.packet.server.game.ServerItemHeldChange;
 import ru.enke.minecraft.protocol.packet.server.game.inventory.InventorySetSlot;
+import ru.enke.sansara.Block.Material;
 import ru.enke.sansara.player.Player;
 
 import java.util.Arrays;
@@ -13,7 +14,7 @@ public class Inventory {
     /* TODO NBT */
     private ItemStack[] pinvStorage = new ItemStack[44];
     private int DEFAULT_PLAYER_INVENTORY_ID = 0;
-    private ItemStack AIR = new ItemStack(0, 0, 0, new byte[]{0});
+    private ItemStack AIR = new ItemStack(Material.AIR.getId(), 0, 0, new byte[]{0});
     private int slot;
     private int HBAR = 36;
     private Player p;
@@ -90,7 +91,7 @@ public class Inventory {
         p.sendPacket(new ServerItemHeldChange(slot));
     }
 
-    private boolean contains(ItemStack itemStack) {
+    public boolean contains(ItemStack itemStack) {
         for (ItemStack aPinvStorage : this.pinvStorage) {
             if (aPinvStorage != null && aPinvStorage == itemStack) {
                 return true;

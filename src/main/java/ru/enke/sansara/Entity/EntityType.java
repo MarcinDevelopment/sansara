@@ -18,4 +18,13 @@ public enum EntityType {
     public int getId() {
         return mobid;
     }
+
+    public static EntityType fromId(int mobid) {
+        for (EntityType mt : EntityType.values()) {
+            if (mt.mobid == mobid) {
+                return mt;
+            }
+        }
+        return null;
+    }
 }

@@ -2,10 +2,7 @@ package ru.enke.sansara.network.handler.ingame;
 
 import org.pmw.tinylog.Logger;
 import ru.enke.minecraft.protocol.packet.client.game.block.BlockPlace;
-import ru.enke.minecraft.protocol.packet.data.game.BlockState;
-import ru.enke.minecraft.protocol.packet.data.game.Direction;
-import ru.enke.minecraft.protocol.packet.data.game.GameMode;
-import ru.enke.minecraft.protocol.packet.data.game.Position;
+import ru.enke.minecraft.protocol.packet.data.game.*;
 import ru.enke.minecraft.protocol.packet.data.message.Message;
 import ru.enke.minecraft.protocol.packet.server.game.block.BlockChange;
 import ru.enke.sansara.Block.Material;
@@ -30,10 +27,12 @@ public class PlayerBlockPlaceHandler implements MessageHandler<BlockPlace> {
             return;
         }
         this.p = session.getPlayer();
+        ItemStack hand = p.getInventory().getItemInHand();
 
-        int blockId = p.getInventory().getItemInHand().getId();
-        int blockData = p.getInventory().getItemInHand().getMetadata();
-        int blockq = p.getInventory().getItemInHand().getQuantity();
+        int blockId = hand.getId();
+        int blockData = hand.getMetadata();
+        int blockq = hand.getQuantity();
+
         Logger.info(msg);
         if (blockId == Material.AIR.getId() || blockq == 0) {
             return;
@@ -77,7 +76,7 @@ public class PlayerBlockPlaceHandler implements MessageHandler<BlockPlace> {
             p.getInventory().removeItem(p.getInventory().getItemInHandIndex(), 1);
         }
 
-        server.broadcast(new Message(ChatColor.GOLD + "Material: " + ChatColor.AQUA + material + ":" + blockData + " q: " + p.getInventory().getItemInHand().getQuantity()));
+        server.broadcast(new Message(ChatColor.GOLD + "Material: " + ChatColor.AQUA + material + ":" + blockData + " q: " + blockq));
         server.sendPacketToNearbyPlayers(p, new BlockChange(new Position(x, y, z), new BlockState(blockId /* item in hand */, blockData)), false);
     }
 

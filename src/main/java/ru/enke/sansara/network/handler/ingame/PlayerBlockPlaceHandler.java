@@ -76,7 +76,7 @@ public class PlayerBlockPlaceHandler implements MessageHandler<BlockPlace> {
             p.getInventory().removeItem(p.getInventory().getItemInHandIndex(), 1);
         }
 
-        server.broadcast(new Message(ChatColor.GOLD + "Material: " + ChatColor.AQUA + material + ":" + blockData + " q: " + blockq));
+        server.broadcast(new Message(ChatColor.GOLD + "Material: " + ChatColor.AQUA + material + ":" + blockData + " q: " + p.getInventory().getItemInHand().getQuantity()));
         server.sendPacketToNearbyPlayers(p, new BlockChange(new Position(x, y, z), new BlockState(blockId /* item in hand */, blockData)), false);
     }
 

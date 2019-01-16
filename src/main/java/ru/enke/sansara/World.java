@@ -24,9 +24,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class World extends PlayerRegistry implements Runnable {
 
     private static final int TIME_UPDATE_INTERVAL = 20;
-    private Position spawnPosition;
     private final String name;
     private final int SPAWN_SIZE = 1;
+    private Position spawnPosition;
     private long age;
     private long time;
     private ConcurrentHashMap<Integer, Entity> worldEntities = new ConcurrentHashMap<>();
@@ -116,6 +116,10 @@ public class World extends PlayerRegistry implements Runnable {
         return spawnPosition;
     }
 
+    public void setSpawnPosition(Position spawnPosition) {
+        this.spawnPosition = spawnPosition;
+    }
+
     public String getName() {
         return name;
     }
@@ -128,13 +132,13 @@ public class World extends PlayerRegistry implements Runnable {
         this.time = time;
     }
 
-    public long getAge() {
-        return age;
-    }
-
     /*public Position getSpawnPosition() {
         return spawnPosition;
     }*/
+
+    public long getAge() {
+        return age;
+    }
 
     public void addEntity(int entitySpawnId, EntityType entity, Position entityspawnLocation) {
         worldEntities.put(entitySpawnId, new Entity(entity, entityspawnLocation));
@@ -158,10 +162,6 @@ public class World extends PlayerRegistry implements Runnable {
 
     public void setDimension(int dimension) {
         this.dimension = dimension;
-    }
-
-    public void setSpawnPosition(Position spawnPosition) {
-        this.spawnPosition = spawnPosition;
     }
 
     public long getSeed() {

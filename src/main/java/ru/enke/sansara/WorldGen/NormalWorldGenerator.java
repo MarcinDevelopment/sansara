@@ -6,9 +6,10 @@ import ru.enke.sansara.Utils.SimplexNoise;
 import ru.enke.sansara.WorldGen.Chunk.Chunk;
 import ru.enke.sansara.WorldGen.Chunk.ChunkCoordinates;
 
+import static ru.enke.sansara.Utils.Constants.CHUNK_SIZE;
+
 public class NormalWorldGenerator implements WorldGenerator {
 
-    private final int CHUNK_SIZE = 16;
     private long SEED;
 
     @Override

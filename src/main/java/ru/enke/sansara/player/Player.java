@@ -7,8 +7,9 @@ import ru.enke.minecraft.protocol.packet.data.message.Message;
 import ru.enke.minecraft.protocol.packet.data.message.MessageType;
 import ru.enke.minecraft.protocol.packet.server.game.Disconnect;
 import ru.enke.minecraft.protocol.packet.server.game.ServerChat;
+import ru.enke.minecraft.protocol.packet.server.game.ServerItemHeldChange;
 import ru.enke.minecraft.protocol.packet.server.game.entity.UpdateHealth;
-import ru.enke.sansara.Inventory.Inventory;
+import ru.enke.sansara.Inventory.PlayerInventory;
 import ru.enke.sansara.World;
 import ru.enke.sansara.login.LoginProfile;
 import ru.enke.sansara.network.session.Session;
@@ -32,7 +33,7 @@ public class Player {
     private float health = 20.0F;
     private int foodLevel = 10;
     private float saturation = 5.0F;
-    private Inventory inventory;
+    private PlayerInventory inventory;
     private boolean onGround;
     private boolean flying;
 
@@ -41,7 +42,7 @@ public class Player {
         this.session = session;
         this.world = world;
         this.profile = profile;
-        this.inventory = new Inventory(this);
+        this.inventory = new PlayerInventory(this);
     }
 
     public void tick() {
@@ -182,7 +183,7 @@ public class Player {
         this.saturation = saturation;
     }
 
-    public Inventory getInventory() {
+    public PlayerInventory getInventory() {
         return inventory;
     }
 
@@ -196,5 +197,9 @@ public class Player {
 
     public boolean isFlying() {
         return !isOnGround();
+    }
+
+    public void setHeldItemSlot(int slot) {
+        sendPacket(new ServerItemHeldChange(slot));
     }
 }

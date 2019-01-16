@@ -15,10 +15,6 @@ public enum EntityType {
         this.mobid = mobid;
     }
 
-    public int getId() {
-        return mobid;
-    }
-
     public static EntityType fromId(int mobid) {
         for (EntityType mt : EntityType.values()) {
             if (mt.mobid == mobid) {
@@ -26,5 +22,9 @@ public enum EntityType {
             }
         }
         return null;
+    }
+
+    public int getId() {
+        return mobid;
     }
 }

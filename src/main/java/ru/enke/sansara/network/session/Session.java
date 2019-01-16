@@ -144,13 +144,10 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
         //Another test
         player.sendPacket(new PlayerListData(new Message("Hello, " + profile.getName(), MessageColor.GOLD), new Message("0x4A packet test")));
         //TODO: create 0x2E packet
-        player.getInventory().setItem(36, new ItemStack(Material.WOOL.getId(), 16, 0, new byte[]{0}));
-        player.getInventory().setItem(37, new ItemStack(Material.WOOL.getId(), 16, 1, new byte[]{0}));
-        player.getInventory().setItem(38, new ItemStack(Material.WOOL.getId(), 16, 2, new byte[]{0}));
-        player.getInventory().setItem(39, new ItemStack(Material.WOOL.getId(), 16, 3, new byte[]{0}));
-        player.getInventory().setItem(40, new ItemStack(Material.WOOL.getId(), 16, 4, new byte[]{0}));
-        player.getInventory().setItem(41, new ItemStack(Material.WOOL.getId(), 16, 5, new byte[]{0}));
-        player.getInventory().setItem(42, new ItemStack(159, 16, 4, new byte[]{0}));
+        //DEBUG
+        for (int i = 0; i < 16; i++) {
+            player.getInventory().addItem(new ItemStack(Material.WOOL.getId(), 16, i, new byte[]{0}));
+        }
     }
 
     private void setCompression(final int threshold) {

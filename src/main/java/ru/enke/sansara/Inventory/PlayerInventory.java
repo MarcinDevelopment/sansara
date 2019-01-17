@@ -14,7 +14,7 @@ public class PlayerInventory extends objInventory {
     private int slot;
 
     public PlayerInventory(Player p) {
-        super(p, InventoryType.PLAYER_INVENTORY);
+        super(p, InventoryType.PLAYER_INVENTORY, "default");
         this.p = p;
     }
 

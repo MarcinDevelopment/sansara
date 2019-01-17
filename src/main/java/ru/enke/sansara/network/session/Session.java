@@ -28,6 +28,8 @@ import ru.enke.minecraft.protocol.packet.server.login.LoginSuccess;
 import ru.enke.minecraft.protocol.packet.server.status.PingResponse;
 import ru.enke.sansara.Block.Material;
 import ru.enke.sansara.Entity.EntityType;
+import ru.enke.sansara.Inventory.InventoryType;
+import ru.enke.sansara.Inventory.objInventory;
 import ru.enke.sansara.Server;
 import ru.enke.sansara.World;
 import ru.enke.sansara.login.LoginProfile;
@@ -148,6 +150,7 @@ public class Session extends SimpleChannelInboundHandler<PacketMessage> {
         for (int i = 0; i < 16; i++) {
             player.getInventory().addItem(new ItemStack(Material.WOOL.getId(), 16, i, new byte[]{0}));
         }
+        player.openInventory(new objInventory(player, InventoryType.CHEST, null));
     }
 
     private void setCompression(final int threshold) {

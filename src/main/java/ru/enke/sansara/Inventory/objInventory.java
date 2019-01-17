@@ -1,11 +1,13 @@
 package ru.enke.sansara.Inventory;
 
 import ru.enke.minecraft.protocol.packet.data.game.ItemStack;
+import ru.enke.minecraft.protocol.packet.server.game.inventory.InventoryItems;
 import ru.enke.minecraft.protocol.packet.server.game.inventory.InventorySetSlot;
 import ru.enke.sansara.Block.Material;
 import ru.enke.sansara.player.Player;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class objInventory {
 
@@ -13,11 +15,18 @@ public class objInventory {
     ItemStack AIR = new ItemStack(Material.AIR.getId(), 0, 0, new byte[]{0});
     private Player p;
     private int INVENTORY_WINDOW;
+    private String INVENTORY_NAME;
+    private int INVENTORY_CAPACITY;
+    private String INVENTORY_TYPE;
 
-    objInventory(Player p, InventoryType invType) {
+    public objInventory(Player p, InventoryType invType, String customName) {
         this.pinvStorage = new ItemStack[invType.getCapacity()];
         this.p = p;
         this.INVENTORY_WINDOW = invType.getTypeid();
+        if (customName == null) customName = invType.getDefaultName();
+        this.INVENTORY_NAME = customName;
+        this.INVENTORY_CAPACITY = invType.getCapacity();
+        this.INVENTORY_TYPE = invType.getWindowType();
     }
 
     public ItemStack getItem(int slot) {
@@ -35,6 +44,13 @@ public class objInventory {
     public void setItem(int i, ItemStack itemstack) {
         this.pinvStorage[i] = itemstack == null ? AIR : itemstack;
         p.sendPacket(new InventorySetSlot(INVENTORY_WINDOW, i, itemstack));
+    }
+
+    public void setItems(List<ItemStack> items) {
+        for (int i = 0; i < items.size(); ++i) {
+            this.pinvStorage[i] = items.get(i) == null ? AIR : items.get(i);
+        }
+        p.sendPacket(new InventoryItems(INVENTORY_WINDOW, items));
     }
 
     public void removeItem(int pos, int q) {
@@ -64,5 +80,21 @@ public class objInventory {
             }
         }
         return false;
+    }
+
+    public String getInventoryCustomName() {
+        return INVENTORY_NAME;
+    }
+
+    public String getInventoryWindowType() {
+        return INVENTORY_TYPE;
+    }
+
+    public int getInventoryWindowId() {
+        return INVENTORY_WINDOW;
+    }
+
+    public int getInventoryCapacity() {
+        return INVENTORY_CAPACITY;
     }
 }

@@ -9,7 +9,9 @@ import ru.enke.minecraft.protocol.packet.server.game.Disconnect;
 import ru.enke.minecraft.protocol.packet.server.game.ServerChat;
 import ru.enke.minecraft.protocol.packet.server.game.ServerItemHeldChange;
 import ru.enke.minecraft.protocol.packet.server.game.entity.UpdateHealth;
+import ru.enke.minecraft.protocol.packet.server.game.inventory.InventoryOpen;
 import ru.enke.sansara.Inventory.PlayerInventory;
+import ru.enke.sansara.Inventory.objInventory;
 import ru.enke.sansara.World;
 import ru.enke.sansara.login.LoginProfile;
 import ru.enke.sansara.network.session.Session;
@@ -201,5 +203,10 @@ public class Player {
 
     public void setHeldItemSlot(int slot) {
         sendPacket(new ServerItemHeldChange(slot));
+    }
+
+    public void openInventory(objInventory inventory) {
+        if (inventory == null) return;
+        sendPacket(new InventoryOpen(inventory.getInventoryWindowId(), inventory.getInventoryWindowType(), new Message(inventory.getInventoryCustomName()), inventory.getInventoryCapacity()));
     }
 }
